@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 025ea3e3a1ff2044da4a689d5e106fbd, type: 3}
+  m_Name: BasicMapData
+  m_EditorClassIdentifier: 
+  groundChunkPrefabs:
+  - {fileID: 4455981294378568322, guid: 985ee2ccc0cd97a4b95813512327b0ab, type: 3}
+  - {fileID: 7373057578844028525, guid: 12cc251bb90def441b5b49a221daf303, type: 3}
+  - {fileID: 4375351808731694302, guid: 297754723a6f1b84e8f85b631a5fa2c7, type: 3}
+  - {fileID: 7336860227374397113, guid: e0d7b2c960ec1a74084fc0166713f5e7, type: 3}
+  objectChunkPrefabs:
+  - {fileID: 429383245321566315, guid: c6a1ec6952a774f479375e4dcde7e893, type: 3}
+  - {fileID: 905451933735702591, guid: 7c0f1c93521429f4b978300736c464d4, type: 3}
+  - {fileID: 3152899062620069265, guid: 5bb9fd806e8ffb34ab7916fa338e9e48, type: 3}
+  - {fileID: 8096182940637306176, guid: 448a411ca841e8a43add0bd127b57de9, type: 3}
