@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6845687787654948824}
   - component: {fileID: 7457947282706291579}
   - component: {fileID: 1569098808783149314}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Object2_Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}

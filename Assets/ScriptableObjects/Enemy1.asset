@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21b5eb830df650458704a6c68a72347, type: 3}
+  m_Name: Enemy1
+  m_EditorClassIdentifier: 
+  enemyName: Mushroom
+  sprite: {fileID: 4944230376442633554, guid: c6ac0078f39473048b9f54d791095f35, type: 3}
+  animatorController: {fileID: 9100000, guid: 6930ff0ee875ee14d9188934da202817, type: 2}
+  health: 10
+  speed: 1
+  damage: 10
+  scorePoints: 10
