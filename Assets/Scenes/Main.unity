@@ -699,7 +699,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapData: {fileID: 11400000, guid: 7e393f1767b0ab0479011132b3167e41, type: 2}
   chunkSize: 30
-  playerTransform: {fileID: 350453841}
 --- !u!156049354 &1778533900
 Grid:
   m_ObjectHideFlags: 0
@@ -852,6 +851,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8100978938586405892, guid: 08b85044ef0fd1f48acccebb4528d293,
+        type: 3}
+      propertyPath: baseMoveSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8843603877064241791, guid: 08b85044ef0fd1f48acccebb4528d293,
+        type: 3}
+      propertyPath: experienceLayer.m_Bits
+      value: 4096
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
