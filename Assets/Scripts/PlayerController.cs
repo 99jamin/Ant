@@ -1,40 +1,25 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 플레이어의 이동 및 애니메이션을 담당하는 컨트롤러
-/// New Input System을 사용하여 입력을 처리합니다.
+/// 플레이어의 물리적 이동 및 입력 처리를 담당하는 컨트롤러
+/// New Input System을 사용하여 입력을 처리하고, Rigidbody2D를 제어합니다.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
-public class PlayerController : MonoBehaviour, IDamageable
+public class PlayerController : MonoBehaviour
 {
-    #region Events
-    public event Action OnPlayerDeath;
-    public event Action<float, float> OnHealthChanged;
-    #endregion
-
-    #region IDamageable Properties
-    public float CurrentHealth => _currentHealth;
-    public float MaxHealth => maxHealth;
-    public bool IsDead => _currentHealth <= 0f;
-    #endregion
-
     #region Serialized Fields
     [Header("이동 설정")]
-    [Tooltip("플레이어 이동 속도")]
-    [SerializeField] private float moveSpeed = 5f;
-
-    [Header("체력 설정")]
-    [Tooltip("최대 체력")]
-    [SerializeField] private float maxHealth = 100f;
+    [Tooltip("플레이어 기본 이동 속도")]
+    [SerializeField] private float baseMoveSpeed = 5f;
     #endregion
 
     #region Private Fields
     // Animator Parameter Hash (성능 최적화)
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
 
     // Cached Components
     private Rigidbody2D _rb;
@@ -43,7 +28,15 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     // State
     private Vector2 _moveInput;
-    private float _currentHealth;
+    private float _currentMoveSpeed;
+    private bool _isMovementEnabled = true;
+    #endregion
+
+    #region Public Properties
+    public Vector2 MoveInput => _moveInput;
+    public Vector2 Velocity => _rb.velocity;
+    public bool IsMoving => _moveInput.sqrMagnitude > 0.01f;
+    public bool FacingRight => !_spriteRenderer.flipX;
     #endregion
 
     #region Unity Lifecycle
@@ -51,11 +44,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         CacheComponents();
         ConfigureRigidbody();
-    }
-
-    private void Start()
-    {
-        InitializeHealth();
+        _currentMoveSpeed = baseMoveSpeed;
     }
 
     private void Update()
@@ -65,7 +54,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
-        if (IsDead) return;
+        if (!_isMovementEnabled)
+        {
+            _rb.velocity = Vector2.zero;
+            return;
+        }
 
         Move();
     }
@@ -84,11 +77,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         _rb.gravityScale = 0f;
         _rb.freezeRotation = true;
     }
-
-    private void InitializeHealth()
-    {
-        _currentHealth = maxHealth;
-    }
     #endregion
 
     #region Input Handling
@@ -104,7 +92,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     #region Movement
     private void Move()
     {
-        _rb.velocity = _moveInput * moveSpeed;
+        _rb.velocity = _moveInput * _currentMoveSpeed;
         UpdateSpriteDirection();
     }
 
@@ -117,6 +105,40 @@ public class PlayerController : MonoBehaviour, IDamageable
             _ => _spriteRenderer.flipX
         };
     }
+
+    /// <summary>
+    /// 이동 활성화/비활성화
+    /// </summary>
+    public void SetMovementEnabled(bool isEnabled)
+    {
+        _isMovementEnabled = isEnabled;
+
+        if (!isEnabled)
+        {
+            _rb.velocity = Vector2.zero;
+            _animator.SetBool(IsDeadHash, true);
+        }
+        else
+        {
+            _animator.SetBool(IsDeadHash, false);
+        }
+    }
+
+    /// <summary>
+    /// 이동 속도 배율 적용 (버프/디버프용)
+    /// </summary>
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _currentMoveSpeed = baseMoveSpeed * multiplier;
+    }
+
+    /// <summary>
+    /// 이동 속도 초기화
+    /// </summary>
+    public void ResetSpeed()
+    {
+        _currentMoveSpeed = baseMoveSpeed;
+    }
     #endregion
 
     #region Animation
@@ -125,34 +147,21 @@ public class PlayerController : MonoBehaviour, IDamageable
         float currentSpeed = _moveInput.magnitude;
         _animator.SetFloat(SpeedHash, currentSpeed);
     }
-    #endregion
 
-    #region IDamageable Implementation
-    public void TakeDamage(float damage)
+    /// <summary>
+    /// 애니메이터 트리거 실행
+    /// </summary>
+    public void TriggerAnimation(string triggerName)
     {
-        if (IsDead) return;
-
-        _currentHealth = Mathf.Max(0f, _currentHealth - damage);
-        OnHealthChanged?.Invoke(_currentHealth, maxHealth);
-
-        if (IsDead)
-        {
-            Die();
-        }
+        _animator.SetTrigger(triggerName);
     }
 
-    public void Heal(float amount)
+    /// <summary>
+    /// 애니메이터 bool 파라미터 설정
+    /// </summary>
+    public void SetAnimationBool(string paramName, bool value)
     {
-        if (IsDead) return;
-
-        _currentHealth = Mathf.Min(maxHealth, _currentHealth + amount);
-        OnHealthChanged?.Invoke(_currentHealth, maxHealth);
-    }
-
-    private void Die()
-    {
-        _rb.velocity = Vector2.zero;
-        OnPlayerDeath?.Invoke();
+        _animator.SetBool(paramName, value);
     }
     #endregion
 }
