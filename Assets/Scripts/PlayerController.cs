@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,11 @@ public class PlayerController : MonoBehaviour
     [Header("이동 설정")]
     [Tooltip("플레이어 기본 이동 속도")]
     [SerializeField] private float baseMoveSpeed = 5f;
+
+    [Header("피격 효과")]
+    [SerializeField] private Color damageFlashColor = Color.red;
+    [SerializeField] private float flashDuration = 0.1f;
+    [SerializeField] private int flashCount = 3;
     #endregion
 
     #region Private Fields
@@ -30,6 +36,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 _moveInput;
     private float _currentMoveSpeed;
     private bool _isMovementEnabled = true;
+
+    // Damage Flash
+    private Color _originalColor;
+    private Coroutine _flashCoroutine;
     #endregion
 
     #region Public Properties
@@ -70,6 +80,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
+        _originalColor = _spriteRenderer.color;
     }
 
     private void ConfigureRigidbody()
@@ -162,6 +173,35 @@ public class PlayerController : MonoBehaviour
     public void SetAnimationBool(string paramName, bool value)
     {
         _animator.SetBool(paramName, value);
+    }
+    #endregion
+
+    #region Damage Flash
+    /// <summary>
+    /// 피격 시 빨간색 깜빡임 효과 재생
+    /// </summary>
+    public void PlayDamageFlash()
+    {
+        if (_flashCoroutine != null)
+        {
+            StopCoroutine(_flashCoroutine);
+        }
+        _flashCoroutine = StartCoroutine(DamageFlashCoroutine());
+    }
+
+    private IEnumerator DamageFlashCoroutine()
+    {
+        WaitForSeconds flashWait = new WaitForSeconds(flashDuration);
+
+        for (int i = 0; i < flashCount; i++)
+        {
+            _spriteRenderer.color = damageFlashColor;
+            yield return flashWait;
+            _spriteRenderer.color = _originalColor;
+            yield return flashWait;
+        }
+
+        _flashCoroutine = null;
     }
     #endregion
 }

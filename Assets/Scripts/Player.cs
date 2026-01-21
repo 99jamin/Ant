@@ -30,6 +30,12 @@ public class Player : MonoBehaviour, IDamageable
     public float CurrentExperience => _currentExperience;
     public float ExperienceToNextLevel => CalculateRequiredExperience(_level);
     public PlayerController Controller => _controller;
+    public float MagnetRadius { get; set; }
+
+    // 스킬 매니저에서 수정할 글로벌 배율
+    public float GlobalAreaMultiplier { get; set; } = 1f;
+    public float GlobalCooldownMultiplier { get; set; } = 1f;
+    public float GlobalDamageMultiplier { get; set; } = 1f;
     #endregion
 
     #region Serialized Fields
@@ -44,6 +50,11 @@ public class Player : MonoBehaviour, IDamageable
 
     [Header("무적 시간")]
     [SerializeField] private float invincibilityDuration = 0.5f;
+
+    [Header("경험치 자석")]
+    [SerializeField] private float baseMagnetRadius = 3f;
+    [SerializeField] private float magnetPullSpeed = 15f;
+    [SerializeField] private LayerMask experienceLayer;
     #endregion
 
     #region Private Fields
@@ -58,6 +69,9 @@ public class Player : MonoBehaviour, IDamageable
     // State
     private bool _isInvincible;
     private float _invincibilityTimer;
+
+    // Magnet
+    private readonly Collider2D[] _magnetBuffer = new Collider2D[32]; // GC 방지용 버퍼
     #endregion
 
     #region Unity Lifecycle
@@ -74,7 +88,10 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (IsDead) return;
+
         UpdateInvincibility();
+        UpdateMagnet();
     }
     #endregion
 
@@ -88,6 +105,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         _level = 1;
         _currentExperience = 0f;
+        MagnetRadius = baseMagnetRadius;
         CalculateMaxHealth();
         _currentHealth = _maxHealth;
     }
@@ -113,6 +131,7 @@ public class Player : MonoBehaviour, IDamageable
         else
         {
             StartInvincibility();
+            _controller.PlayDamageFlash();
         }
     }
 
@@ -197,6 +216,23 @@ public class Player : MonoBehaviour, IDamageable
         _currentHealth = _maxHealth * Mathf.Clamp01(healthPercent);
         _controller.SetMovementEnabled(true);
         OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+    #endregion
+
+    #region Magnet
+    private void UpdateMagnet()
+    {
+        if (MagnetRadius <= 0f) return;
+
+        int count = Physics2D.OverlapCircleNonAlloc(transform.position, MagnetRadius, _magnetBuffer, experienceLayer);
+        float pullDelta = magnetPullSpeed * Time.deltaTime;
+
+        for (int i = 0; i < count; i++)
+        {
+            Transform target = _magnetBuffer[i].transform;
+            Vector3 direction = (transform.position - target.position).normalized;
+            target.position += direction * pullDelta;
+        }
     }
     #endregion
 
