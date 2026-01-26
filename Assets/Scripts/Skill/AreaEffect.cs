@@ -1,0 +1,190 @@
+using UnityEngine;
+
+/// <summary>
+/// 장판 효과 컴포넌트
+/// 일정 범위 내 적에게 틱 데미지를 주고, 지속 시간 후 풀에 반환됩니다.
+/// </summary>
+public class AreaEffect : MonoBehaviour, IPoolable
+{
+    #region Serialized Fields
+    [Header("디버그")]
+    [SerializeField] private bool showGizmos = true;
+    #endregion
+
+    #region Private Fields
+    private string _poolKey;
+    private PoolManager _poolManager;
+    private SpriteRenderer _spriteRenderer;
+
+    private float _damage;
+    private float _radius;
+    private float _tickInterval;
+    private float _duration;
+    private LayerMask _enemyLayer;
+    private string _hitEffectPoolKey;
+
+    private float _durationTimer;
+    private float _tickTimer;
+
+    // GC 방지용 버퍼
+    private readonly Collider2D[] _hitBuffer = new Collider2D[32];
+    #endregion
+
+    #region Properties
+    public string PoolKey => _poolKey;
+    #endregion
+
+    #region Public Methods
+    /// <summary>
+    /// 장판 효과 초기화
+    /// </summary>
+    /// <param name="damage">틱당 데미지</param>
+    /// <param name="radius">범위 반경</param>
+    /// <param name="tickInterval">틱 간격</param>
+    /// <param name="duration">지속 시간</param>
+    /// <param name="enemyLayer">적 레이어</param>
+    /// <param name="poolManager">풀 매니저</param>
+    /// <param name="poolKey">풀 키</param>
+    /// <param name="hitEffectPoolKey">히트 이펙트 풀 키 (선택)</param>
+    public void Initialize(
+        float damage,
+        float radius,
+        float tickInterval,
+        float duration,
+        LayerMask enemyLayer,
+        PoolManager poolManager,
+        string poolKey,
+        string hitEffectPoolKey = null)
+    {
+        _damage = damage;
+        _radius = radius;
+        _tickInterval = tickInterval;
+        _duration = duration;
+        _enemyLayer = enemyLayer;
+        _poolManager = poolManager;
+        _poolKey = poolKey;
+        _hitEffectPoolKey = hitEffectPoolKey;
+
+        ApplyScale(radius);
+    }
+    #endregion
+
+    #region Unity Lifecycle
+    private void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
+    {
+        UpdateDuration();
+        UpdateTick();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showGizmos) return;
+
+        Gizmos.color = new Color(1f, 0f, 0f, 0.3f);
+        Gizmos.DrawSphere(transform.position, _radius > 0 ? _radius : 0.5f);
+    }
+    #endregion
+
+    #region IPoolable Implementation
+    public void OnSpawnFromPool()
+    {
+        _durationTimer = _duration;
+        _tickTimer = 0f; // 스폰 즉시 첫 틱 발동
+    }
+
+    public void OnReturnToPool()
+    {
+        _damage = 0f;
+        _radius = 0f;
+        transform.localScale = Vector3.one;
+    }
+    #endregion
+
+    #region Private Methods
+    /// <summary>
+    /// 스프라이트 bounds 기반으로 스케일 적용
+    /// </summary>
+    private void ApplyScale(float radius)
+    {
+        if (_spriteRenderer == null || _spriteRenderer.sprite == null) return;
+
+        // 스프라이트 원본 크기 (localScale 무관)
+        float spriteSize = _spriteRenderer.sprite.bounds.size.x;
+
+        // 원하는 직경 / 스프라이트 원본 크기 = 필요한 스케일
+        float scale = (radius * 2f) / spriteSize;
+        transform.localScale = Vector3.one * scale;
+    }
+
+    private void UpdateDuration()
+    {
+        _durationTimer -= Time.deltaTime;
+
+        if (_durationTimer <= 0f)
+        {
+            ReturnToPool();
+        }
+    }
+
+    private void UpdateTick()
+    {
+        _tickTimer -= Time.deltaTime;
+
+        if (_tickTimer <= 0f)
+        {
+            DealTickDamage();
+            _tickTimer = _tickInterval;
+        }
+    }
+
+    private void DealTickDamage()
+    {
+        int count = Physics2D.OverlapCircleNonAlloc(
+            transform.position,
+            _radius,
+            _hitBuffer,
+            _enemyLayer
+        );
+
+        for (int i = 0; i < count; i++)
+        {
+            if (_hitBuffer[i].TryGetComponent<IDamageable>(out var target))
+            {
+                target.TakeDamage(_damage);
+                SpawnHitEffect(_hitBuffer[i].transform.position);
+            }
+        }
+    }
+
+    private void SpawnHitEffect(Vector3 position)
+    {
+        if (string.IsNullOrEmpty(_hitEffectPoolKey)) return;
+        if (_poolManager == null || !_poolManager.HasPool(_hitEffectPoolKey)) return;
+
+        GameObject effectObj = _poolManager.Get(_hitEffectPoolKey);
+        effectObj.transform.position = position;
+
+        if (effectObj.TryGetComponent<HitEffect>(out var hitEffect))
+        {
+            hitEffect.Initialize(_poolManager, _hitEffectPoolKey);
+        }
+    }
+
+    private void ReturnToPool()
+    {
+        if (_poolManager != null)
+        {
+            _poolManager.Return(_poolKey, gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+    #endregion
+}
