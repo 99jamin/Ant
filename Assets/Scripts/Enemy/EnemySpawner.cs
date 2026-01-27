@@ -57,7 +57,7 @@ public class EnemySpawner : MonoBehaviour
 
     // 활성 Enemy 추적
     private readonly HashSet<Enemy> _activeEnemies = new();
-    private readonly List<Enemy> _relocationBuffer = new(); // GC 방지용 재사용 버퍼
+    private readonly List<Enemy> _enemiesToProcess = new(); // GC 방지용 재사용 버퍼
 
     // 플레이어 이동 방향 계산용
     private Vector3 _lastPlayerPosition;
@@ -219,11 +219,16 @@ public class EnemySpawner : MonoBehaviour
     #region Enemy Relocation
     private void UpdateEnemyRelocation()
     {
-        // 버퍼 재사용으로 GC 할당 방지
-        _relocationBuffer.Clear();
-        _relocationBuffer.AddRange(_activeEnemies);
+        if (_activeEnemies.Count == 0) return;
 
-        foreach (Enemy enemy in _relocationBuffer)
+        // HashSet을 List로 복사하여 순회 중 수정 가능하도록 함
+        _enemiesToProcess.Clear();
+        foreach (var enemy in _activeEnemies)
+        {
+            _enemiesToProcess.Add(enemy);
+        }
+
+        foreach (Enemy enemy in _enemiesToProcess)
         {
             if (enemy == null || enemy.IsDead) continue;
 

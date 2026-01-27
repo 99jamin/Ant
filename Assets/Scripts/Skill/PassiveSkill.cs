@@ -13,7 +13,7 @@ public abstract class PassiveSkill : BaseSkill
     #region Unity Lifecycle
     protected virtual void OnEnable()
     {
-        if (player != null && !isApplied)
+        if (_player != null && !isApplied)
         {
             ApplyEffect();
         }

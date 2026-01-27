@@ -34,6 +34,22 @@ public class Managers : MonoBehaviour
     }
     #endregion
 
+    #region Game Settings
+    [Header("레이어 설정")]
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask experienceLayer;
+
+    /// <summary>
+    /// 적 레이어 마스크
+    /// </summary>
+    public LayerMask EnemyLayer => enemyLayer;
+
+    /// <summary>
+    /// 경험치 오브젝트 레이어 마스크
+    /// </summary>
+    public LayerMask ExperienceLayer => experienceLayer;
+    #endregion
+
     #region Sub Managers
     private PoolManager _pool;
 

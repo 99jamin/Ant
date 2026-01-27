@@ -89,14 +89,7 @@ public class HitEffect : MonoBehaviour, IPoolable
     #region Private Methods
     private void ReturnToPool()
     {
-        if (_poolManager != null)
-        {
-            _poolManager.Return(_poolKey, gameObject);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        PoolableHelper.ReturnToPool(_poolManager, _poolKey, gameObject);
     }
     #endregion
 }

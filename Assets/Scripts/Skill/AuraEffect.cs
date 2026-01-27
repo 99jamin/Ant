@@ -59,19 +59,9 @@ public class AuraEffect : MonoBehaviour
     #endregion
 
     #region Private Methods
-    /// <summary>
-    /// 스프라이트 bounds 기반으로 스케일 적용
-    /// </summary>
     private void ApplyScale(float radius)
     {
-        if (_spriteRenderer == null || _spriteRenderer.sprite == null) return;
-
-        // 스프라이트 원본 크기 (localScale 무관)
-        float spriteSize = _spriteRenderer.sprite.bounds.size.x;
-
-        // 원하는 직경 / 스프라이트 원본 크기 = 필요한 스케일
-        float scale = (radius * 2f) / spriteSize;
-        transform.localScale = Vector3.one * scale;
+        SpriteScaleHelper.ApplyRadiusScale(transform, _spriteRenderer, radius);
     }
     #endregion
 }

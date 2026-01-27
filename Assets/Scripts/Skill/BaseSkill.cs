@@ -7,16 +7,16 @@ using UnityEngine;
 public abstract class BaseSkill : MonoBehaviour
 {
     #region Protected Fields
-    protected SkillDataSO skillData;
-    protected Player player;
-    protected int currentLevel;
+    protected SkillDataSO _skillData;
+    protected Player _player;
+    protected int _currentLevel;
     #endregion
 
     #region Public Properties
-    public SkillDataSO SkillData => skillData;
-    public int CurrentLevel => currentLevel;
-    public int MaxLevel => skillData != null ? skillData.levels.Count : 0;
-    public bool IsMaxLevel => currentLevel >= MaxLevel;
+    public SkillDataSO SkillData => _skillData;
+    public int CurrentLevel => _currentLevel;
+    public int MaxLevel => _skillData != null ? _skillData.levels.Count : 0;
+    public bool IsMaxLevel => _currentLevel >= MaxLevel;
 
     /// <summary>
     /// 현재 레벨의 스킬 데이터
@@ -25,11 +25,11 @@ public abstract class BaseSkill : MonoBehaviour
     {
         get
         {
-            if (skillData == null || skillData.levels == null || skillData.levels.Count == 0)
+            if (_skillData == null || _skillData.levels == null || _skillData.levels.Count == 0)
                 return null;
 
-            int index = Mathf.Clamp(currentLevel - 1, 0, skillData.levels.Count - 1);
-            return skillData.levels[index];
+            int index = Mathf.Clamp(_currentLevel - 1, 0, _skillData.levels.Count - 1);
+            return _skillData.levels[index];
         }
     }
     #endregion
@@ -42,9 +42,9 @@ public abstract class BaseSkill : MonoBehaviour
     /// <param name="owner">스킬 소유자 (플레이어)</param>
     public virtual void Initialize(SkillDataSO data, Player owner)
     {
-        skillData = data;
-        player = owner;
-        currentLevel = 1;
+        _skillData = data;
+        _player = owner;
+        _currentLevel = 1;
 
         OnInitialize();
     }
@@ -57,7 +57,7 @@ public abstract class BaseSkill : MonoBehaviour
     {
         if (IsMaxLevel) return false;
 
-        currentLevel++;
+        _currentLevel++;
         OnLevelUp();
         return true;
     }
@@ -68,9 +68,9 @@ public abstract class BaseSkill : MonoBehaviour
     /// <returns>레벨다운 성공 여부</returns>
     public virtual bool LevelDown()
     {
-        if (currentLevel <= 1) return false;
+        if (_currentLevel <= 1) return false;
 
-        currentLevel--;
+        _currentLevel--;
         OnLevelChanged();
         return true;
     }
@@ -82,9 +82,9 @@ public abstract class BaseSkill : MonoBehaviour
     public virtual void SetLevel(int level)
     {
         int newLevel = Mathf.Clamp(level, 1, MaxLevel);
-        if (newLevel == currentLevel) return;
+        if (newLevel == _currentLevel) return;
 
-        currentLevel = newLevel;
+        _currentLevel = newLevel;
         OnLevelChanged();
     }
     #endregion

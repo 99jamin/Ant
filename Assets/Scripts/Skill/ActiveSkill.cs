@@ -7,9 +7,9 @@ using UnityEngine;
 public abstract class ActiveSkill : BaseSkill
 {
     #region Protected Fields
-    protected float cooldownTimer;
-    protected Transform currentTarget;
-    protected string hitEffectPoolKey;
+    protected float _cooldownTimer;
+    protected Transform _currentTarget;
+    protected string _hitEffectPoolKey;
 
     // GC 방지용 버퍼
     private readonly Collider2D[] _detectBuffer = new Collider2D[32];
@@ -19,7 +19,7 @@ public abstract class ActiveSkill : BaseSkill
     /// <summary>
     /// 적 탐지 범위 (SO에서 가져옴)
     /// </summary>
-    protected float DetectRange => skillData?.detectRange ?? 10f;
+    protected float DetectRange => _skillData?.detectRange ?? 10f;
 
     /// <summary>
     /// 적 레이어 (Managers에서 가져옴)
@@ -34,7 +34,7 @@ public abstract class ActiveSkill : BaseSkill
         get
         {
             if (CurrentLevelData == null) return 1f;
-            return CurrentLevelData.cooldown * player.GlobalCooldownMultiplier;
+            return CurrentLevelData.cooldown * _player.GlobalCooldownMultiplier;
         }
     }
 
@@ -46,7 +46,7 @@ public abstract class ActiveSkill : BaseSkill
         get
         {
             if (CurrentLevelData == null) return 0f;
-            return CurrentLevelData.damage * player.GlobalDamageMultiplier;
+            return CurrentLevelData.damage * _player.GlobalDamageMultiplier;
         }
     }
 
@@ -58,18 +58,18 @@ public abstract class ActiveSkill : BaseSkill
         get
         {
             if (CurrentLevelData == null) return 1f;
-            return CurrentLevelData.areaMultiplier * player.GlobalAreaMultiplier;
+            return CurrentLevelData.areaMultiplier * _player.GlobalAreaMultiplier;
         }
     }
 
-    public bool CanActivate => cooldownTimer <= 0f;
-    public float CooldownProgress => 1f - (cooldownTimer / ActualCooldown);
+    public bool CanActivate => _cooldownTimer <= 0f;
+    public float CooldownProgress => 1f - (_cooldownTimer / ActualCooldown);
     #endregion
 
     #region Unity Lifecycle
     protected virtual void Update()
     {
-        if (player == null || player.IsDead) return;
+        if (_player == null || _player.IsDead) return;
 
         UpdateCooldown();
 
@@ -83,15 +83,15 @@ public abstract class ActiveSkill : BaseSkill
     #region Cooldown
     private void UpdateCooldown()
     {
-        if (cooldownTimer > 0f)
+        if (_cooldownTimer > 0f)
         {
-            cooldownTimer -= Time.deltaTime;
+            _cooldownTimer -= Time.deltaTime;
         }
     }
 
     protected void StartCooldown()
     {
-        cooldownTimer = ActualCooldown;
+        _cooldownTimer = ActualCooldown;
     }
     #endregion
 
@@ -101,9 +101,9 @@ public abstract class ActiveSkill : BaseSkill
     /// </summary>
     protected virtual void TryActivate()
     {
-        currentTarget = FindNearestEnemy();
+        _currentTarget = FindNearestEnemy();
 
-        if (currentTarget != null || !RequiresTarget())
+        if (_currentTarget != null || !RequiresTarget())
         {
             Activate();
             StartCooldown();
@@ -128,7 +128,7 @@ public abstract class ActiveSkill : BaseSkill
     protected Transform FindNearestEnemy()
     {
         int count = Physics2D.OverlapCircleNonAlloc(
-            player.transform.position,
+            _player.transform.position,
             DetectRange,
             _detectBuffer,
             EnemyLayer
@@ -138,7 +138,7 @@ public abstract class ActiveSkill : BaseSkill
 
         Transform nearest = null;
         float nearestDistance = float.MaxValue;
-        Vector3 playerPos = player.transform.position;
+        Vector3 playerPos = _player.transform.position;
 
         for (int i = 0; i < count; i++)
         {
@@ -159,7 +159,7 @@ public abstract class ActiveSkill : BaseSkill
     protected int FindEnemiesInRange(float range, Collider2D[] results)
     {
         return Physics2D.OverlapCircleNonAlloc(
-            player.transform.position,
+            _player.transform.position,
             range,
             results,
             EnemyLayer
@@ -171,7 +171,7 @@ public abstract class ActiveSkill : BaseSkill
     protected override void OnInitialize()
     {
         base.OnInitialize();
-        cooldownTimer = 0f;
+        _cooldownTimer = 0f;
 
         RegisterHitEffectPool();
     }
@@ -182,14 +182,14 @@ public abstract class ActiveSkill : BaseSkill
 
     private void RegisterHitEffectPool()
     {
-        if (skillData == null || skillData.hitEffectPrefab == null) return;
+        if (_skillData == null || _skillData.hitEffectPrefab == null) return;
         if (PoolManager == null) return;
 
-        hitEffectPoolKey = $"HitEffect_{skillData.skillName}";
+        _hitEffectPoolKey = $"HitEffect_{_skillData.skillName}";
 
-        if (!PoolManager.HasPool(hitEffectPoolKey))
+        if (!PoolManager.HasPool(_hitEffectPoolKey))
         {
-            PoolManager.CreatePool(hitEffectPoolKey, skillData.hitEffectPrefab, 10);
+            PoolManager.CreatePool(_hitEffectPoolKey, _skillData.hitEffectPrefab, 10);
         }
     }
 
@@ -198,16 +198,7 @@ public abstract class ActiveSkill : BaseSkill
     /// </summary>
     protected void SpawnHitEffect(Vector3 position)
     {
-        if (string.IsNullOrEmpty(hitEffectPoolKey)) return;
-        if (PoolManager == null || !PoolManager.HasPool(hitEffectPoolKey)) return;
-
-        GameObject effectObj = PoolManager.Get(hitEffectPoolKey);
-        effectObj.transform.position = position;
-
-        if (effectObj.TryGetComponent<HitEffect>(out var hitEffect))
-        {
-            hitEffect.Initialize(PoolManager, hitEffectPoolKey);
-        }
+        PoolableHelper.SpawnHitEffect(PoolManager, _hitEffectPoolKey, position);
     }
     #endregion
 }

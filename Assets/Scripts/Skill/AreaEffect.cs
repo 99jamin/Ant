@@ -106,19 +106,9 @@ public class AreaEffect : MonoBehaviour, IPoolable
     #endregion
 
     #region Private Methods
-    /// <summary>
-    /// 스프라이트 bounds 기반으로 스케일 적용
-    /// </summary>
     private void ApplyScale(float radius)
     {
-        if (_spriteRenderer == null || _spriteRenderer.sprite == null) return;
-
-        // 스프라이트 원본 크기 (localScale 무관)
-        float spriteSize = _spriteRenderer.sprite.bounds.size.x;
-
-        // 원하는 직경 / 스프라이트 원본 크기 = 필요한 스케일
-        float scale = (radius * 2f) / spriteSize;
-        transform.localScale = Vector3.one * scale;
+        SpriteScaleHelper.ApplyRadiusScale(transform, _spriteRenderer, radius);
     }
 
     private void UpdateDuration()
@@ -163,28 +153,12 @@ public class AreaEffect : MonoBehaviour, IPoolable
 
     private void SpawnHitEffect(Vector3 position)
     {
-        if (string.IsNullOrEmpty(_hitEffectPoolKey)) return;
-        if (_poolManager == null || !_poolManager.HasPool(_hitEffectPoolKey)) return;
-
-        GameObject effectObj = _poolManager.Get(_hitEffectPoolKey);
-        effectObj.transform.position = position;
-
-        if (effectObj.TryGetComponent<HitEffect>(out var hitEffect))
-        {
-            hitEffect.Initialize(_poolManager, _hitEffectPoolKey);
-        }
+        PoolableHelper.SpawnHitEffect(_poolManager, _hitEffectPoolKey, position);
     }
 
     private void ReturnToPool()
     {
-        if (_poolManager != null)
-        {
-            _poolManager.Return(_poolKey, gameObject);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        PoolableHelper.ReturnToPool(_poolManager, _poolKey, gameObject);
     }
     #endregion
 }

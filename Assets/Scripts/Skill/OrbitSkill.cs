@@ -44,12 +44,12 @@ public class OrbitSkill : ActiveSkill
     /// <summary>
     /// 플레이어 위치
     /// </summary>
-    public Vector3 PlayerPosition => player.transform.position;
+    public Vector3 PlayerPosition => _player.transform.position;
 
     /// <summary>
-    /// 적 레이어
+    /// 적 레이어 (OrbitObject에서 접근용)
     /// </summary>
-    public new LayerMask EnemyLayer => base.EnemyLayer;
+    public LayerMask TargetEnemyLayer => EnemyLayer;
 
     /// <summary>
     /// 현재 투사체(오브젝트) 개수
@@ -64,9 +64,9 @@ public class OrbitSkill : ActiveSkill
         SpawnOrbitObjects(CurrentProjectileCount);
 
         // 글로벌 스탯 변경 이벤트 구독
-        if (player != null)
+        if (_player != null)
         {
-            player.OnGlobalStatsChanged += OnGlobalStatsChanged;
+            _player.OnGlobalStatsChanged += OnGlobalStatsChanged;
         }
     }
 
@@ -125,7 +125,7 @@ public class OrbitSkill : ActiveSkill
     {
         if (orbitObjectPrefab == null)
         {
-            Debug.LogWarning($"[OrbitSkill] 회전 오브젝트 프리팹이 설정되지 않았습니다: {skillData?.skillName}");
+            Debug.LogWarning($"[OrbitSkill] 회전 오브젝트 프리팹이 설정되지 않았습니다: {_skillData?.skillName}");
             return;
         }
 
@@ -137,8 +137,8 @@ public class OrbitSkill : ActiveSkill
 
     private void SpawnSingleOrbitObject(int index, int totalCount)
     {
-        GameObject obj = Instantiate(orbitObjectPrefab);
-        obj.transform.SetParent(null); // 월드 스페이스에서 독립적으로 이동
+        // OrbitSkill 자식으로 생성 (풀 사용 안 함 - 개수가 적고 스킬과 생명주기 동일)
+        GameObject obj = Instantiate(orbitObjectPrefab, transform);
 
         OrbitObject orbitObject = obj.GetComponent<OrbitObject>();
         if (orbitObject != null)
@@ -166,9 +166,9 @@ public class OrbitSkill : ActiveSkill
     private void OnDestroy()
     {
         // 이벤트 구독 해제
-        if (player != null)
+        if (_player != null)
         {
-            player.OnGlobalStatsChanged -= OnGlobalStatsChanged;
+            _player.OnGlobalStatsChanged -= OnGlobalStatsChanged;
         }
 
         // 스킬 파괴 시 모든 회전 오브젝트 정리

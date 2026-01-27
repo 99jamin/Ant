@@ -21,7 +21,7 @@ public class AreaSkill : ActiveSkill
     /// <summary>
     /// 틱 데미지 간격 (SO에서 가져옴)
     /// </summary>
-    private float TickInterval => skillData?.tickInterval ?? 0.5f;
+    private float TickInterval => _skillData?.tickInterval ?? 0.5f;
     #endregion
 
     #region Overrides
@@ -31,7 +31,7 @@ public class AreaSkill : ActiveSkill
 
         if (areaEffectPrefab != null && PoolManager != null)
         {
-            _areaPoolKey = $"AreaEffect_{skillData.skillName}";
+            _areaPoolKey = $"AreaEffect_{_skillData.skillName}";
 
             if (!PoolManager.HasPool(_areaPoolKey))
             {
@@ -62,7 +62,7 @@ public class AreaSkill : ActiveSkill
         }
 
         GameObject areaObj = PoolManager.Get(_areaPoolKey);
-        areaObj.transform.position = player.transform.position;
+        areaObj.transform.position = _player.transform.position;
 
         if (areaObj.TryGetComponent<AreaEffect>(out var areaEffect))
         {
@@ -74,7 +74,7 @@ public class AreaSkill : ActiveSkill
                 EnemyLayer,
                 PoolManager,
                 _areaPoolKey,
-                hitEffectPoolKey
+                _hitEffectPoolKey
             );
         }
     }
