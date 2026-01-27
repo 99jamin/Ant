@@ -12,7 +12,7 @@ public class ProjectileSkill : ActiveSkill
     #endregion
 
     #region Private Fields
-    private string poolKey;
+    private string _poolKey;
     #endregion
 
     #region Properties
@@ -21,12 +21,12 @@ public class ProjectileSkill : ActiveSkill
     /// <summary>
     /// 투사체 퍼짐 각도 (SO에서 가져옴)
     /// </summary>
-    private float SpreadAngle => skillData?.spreadAngle ?? 15f;
+    private float SpreadAngle => _skillData?.spreadAngle ?? 15f;
 
     /// <summary>
     /// 발사 방향 타입 (SO에서 가져옴)
     /// </summary>
-    private FireDirectionType FireDirection => skillData?.fireDirection ?? FireDirectionType.TowardEnemy;
+    private FireDirectionType FireDirection => _skillData?.fireDirection ?? FireDirectionType.TowardEnemy;
     #endregion
 
     #region Overrides
@@ -36,11 +36,11 @@ public class ProjectileSkill : ActiveSkill
 
         if (projectilePrefab != null && PoolManager != null)
         {
-            poolKey = $"Projectile_{skillData.skillName}";
+            _poolKey = $"Projectile_{_skillData.skillName}";
 
-            if (!PoolManager.HasPool(poolKey))
+            if (!PoolManager.HasPool(_poolKey))
             {
-                PoolManager.CreatePool(poolKey, projectilePrefab, 20);
+                PoolManager.CreatePool(_poolKey, projectilePrefab, 20);
             }
         }
     }
@@ -52,8 +52,8 @@ public class ProjectileSkill : ActiveSkill
         switch (FireDirection)
         {
             case FireDirectionType.TowardEnemy:
-                if (currentTarget == null) return;
-                FireProjectiles((currentTarget.position - player.transform.position).normalized, count);
+                if (_currentTarget == null) return;
+                FireProjectiles((_currentTarget.position - _player.transform.position).normalized, count);
                 break;
 
             case FireDirectionType.HorizontalBoth:
@@ -62,7 +62,7 @@ public class ProjectileSkill : ActiveSkill
                 break;
 
             case FireDirectionType.PlayerFacing:
-                Vector2 facingDir = player.Controller.FacingRight ? Vector2.right : Vector2.left;
+                Vector2 facingDir = _player.Controller.FacingRight ? Vector2.right : Vector2.left;
                 FireProjectiles(facingDir, count);
                 break;
 
@@ -114,17 +114,17 @@ public class ProjectileSkill : ActiveSkill
     {
         GameObject projObj;
 
-        if (PoolManager != null && PoolManager.HasPool(poolKey))
+        if (PoolManager != null && PoolManager.HasPool(_poolKey))
         {
-            projObj = PoolManager.Get(poolKey);
+            projObj = PoolManager.Get(_poolKey);
         }
         else
         {
-            Debug.LogError($"[ProjectileSkill] 풀이 생성되지 않았습니다: {poolKey}");
+            Debug.LogError($"[ProjectileSkill] 풀이 생성되지 않았습니다: {_poolKey}");
             projObj = Instantiate(projectilePrefab);
         }
 
-        projObj.transform.position = player.transform.position;
+        projObj.transform.position = _player.transform.position;
 
         if (projObj.TryGetComponent<Projectile>(out var projectile))
         {
@@ -136,8 +136,8 @@ public class ProjectileSkill : ActiveSkill
                 CurrentLevelData?.lifetime ?? 5f,
                 ActualAreaMultiplier,
                 PoolManager,
-                poolKey,
-                hitEffectPoolKey
+                _poolKey,
+                _hitEffectPoolKey
             );
         }
     }

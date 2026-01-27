@@ -19,25 +19,40 @@ public enum FireDirectionType
 [CreateAssetMenu(fileName = "NewSkill", menuName = "ScriptableObjects/Skill")]
 public class SkillDataSO : ScriptableObject
 {
+    #region Serialized Fields
     [Header("기본 정보")]
-    public string skillName;
-    [TextArea] public string description;
-    public Sprite icon;
-    public GameObject skillPrefab;
+    [SerializeField] private string _skillName;
+    [SerializeField] [TextArea] private string _description;
+    [SerializeField] private Sprite _icon;
+    [SerializeField] private GameObject _skillPrefab;
 
     [Header("스킬 설정")]
-    public float detectRange = 10f;         // 적 탐지 범위
-    public float spreadAngle = 15f;         // 투사체 퍼짐 각도
-    public FireDirectionType fireDirection; // 발사 방향 타입
-    
+    [SerializeField] private float _detectRange = 10f;
+    [SerializeField] private float _spreadAngle = 15f;
+    [SerializeField] private FireDirectionType _fireDirection;
+
     [Header("히트 이펙트 설정")]
-    public GameObject hitEffectPrefab; // 이 스킬이 적중했을 때 터질 이펙트 패키지
+    [SerializeField] private GameObject _hitEffectPrefab;
 
     [Header("장판(Area) 스킬 설정")]
-    public float tickInterval = 0.5f;  // 틱 데미지 간격 (초)
+    [SerializeField] private float _tickInterval = 0.5f;
 
     [Header("레벨 데이터")]
-    public List<SkillLevelData> levels;
+    [SerializeField] private List<SkillLevelData> _levels;
+    #endregion
+
+    #region Properties
+    public string skillName => _skillName;
+    public string description => _description;
+    public Sprite icon => _icon;
+    public GameObject skillPrefab => _skillPrefab;
+    public float detectRange => _detectRange;
+    public float spreadAngle => _spreadAngle;
+    public FireDirectionType fireDirection => _fireDirection;
+    public GameObject hitEffectPrefab => _hitEffectPrefab;
+    public float tickInterval => _tickInterval;
+    public IReadOnlyList<SkillLevelData> levels => _levels;
+    #endregion
 }
 
 /// <summary>

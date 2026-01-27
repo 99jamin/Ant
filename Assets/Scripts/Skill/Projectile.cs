@@ -9,18 +9,18 @@ using UnityEngine;
 public class Projectile : MonoBehaviour, IPoolable
 {
     #region Protected Fields
-    protected Rigidbody2D rb;
-    protected float damage;
-    protected float speed;
-    protected float lifetime;
-    protected float areaMultiplier = 1f;
-    protected Vector2 direction;
-    protected float lifetimeTimer;
-    protected int pierceCount;
-    protected int currentPierceCount;
-    protected string poolKey;
-    protected string hitEffectPoolKey;
-    protected PoolManager poolManager;
+    protected Rigidbody2D _rb;
+    protected float _damage;
+    protected float _speed;
+    protected float _lifetime;
+    protected float _areaMultiplier = 1f;
+    protected Vector2 _direction;
+    protected float _lifetimeTimer;
+    protected int _pierceCount;
+    protected int _currentPierceCount;
+    protected string _poolKey;
+    protected string _hitEffectPoolKey;
+    protected PoolManager _poolManager;
     #endregion
 
     #region Properties
@@ -31,26 +31,26 @@ public class Projectile : MonoBehaviour, IPoolable
     #endregion
 
     #region IPoolable Implementation
-    public string PoolKey => poolKey;
+    public string PoolKey => _poolKey;
 
     public virtual void OnSpawnFromPool()
     {
-        lifetimeTimer = lifetime;
-        currentPierceCount = pierceCount;
-        rb.velocity = Vector2.zero;
+        _lifetimeTimer = _lifetime;
+        _currentPierceCount = _pierceCount;
+        _rb.velocity = Vector2.zero;
     }
 
     public virtual void OnReturnToPool()
     {
-        rb.velocity = Vector2.zero;
-        damage = 0f;
+        _rb.velocity = Vector2.zero;
+        _damage = 0f;
     }
     #endregion
 
     #region Unity Lifecycle
     protected virtual void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
         ConfigureRigidbody();
     }
 
@@ -75,8 +75,8 @@ public class Projectile : MonoBehaviour, IPoolable
     #region Initialization
     private void ConfigureRigidbody()
     {
-        rb.gravityScale = 0f;
-        rb.freezeRotation = true;
+        _rb.gravityScale = 0f;
+        _rb.freezeRotation = true;
     }
 
     /// <summary>
@@ -93,23 +93,23 @@ public class Projectile : MonoBehaviour, IPoolable
         string key,
         string hitEffectKey = null)
     {
-        this.damage = damage;
-        this.direction = dir.normalized;
-        this.speed = speed;
-        this.pierceCount = pierce;
-        this.currentPierceCount = pierce;
-        this.lifetime = lifetime;
-        this.lifetimeTimer = lifetime;
-        this.areaMultiplier = areaMultiplier;
-        this.poolManager = pool;
-        this.poolKey = key;
-        this.hitEffectPoolKey = hitEffectKey;
+        _damage = damage;
+        _direction = dir.normalized;
+        _speed = speed;
+        _pierceCount = pierce;
+        _currentPierceCount = pierce;
+        _lifetime = lifetime;
+        _lifetimeTimer = lifetime;
+        _areaMultiplier = areaMultiplier;
+        _poolManager = pool;
+        _poolKey = key;
+        _hitEffectPoolKey = hitEffectKey;
 
         // 크기 적용
-        transform.localScale = Vector3.one * areaMultiplier;
+        transform.localScale = Vector3.one * _areaMultiplier;
 
         // 방향에 따른 회전
-        float angle = Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(-_direction.y, -_direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
     #endregion
@@ -117,16 +117,16 @@ public class Projectile : MonoBehaviour, IPoolable
     #region Movement
     protected virtual void Move()
     {
-        rb.velocity = direction * speed;
+        _rb.velocity = _direction * _speed;
     }
     #endregion
 
     #region Lifetime
     private void UpdateLifetime()
     {
-        lifetimeTimer -= Time.deltaTime;
+        _lifetimeTimer -= Time.deltaTime;
 
-        if (lifetimeTimer <= 0f)
+        if (_lifetimeTimer <= 0f)
         {
             ReturnToPool();
         }
@@ -143,15 +143,15 @@ public class Projectile : MonoBehaviour, IPoolable
     {
         if (target.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(damage);
+            damageable.TakeDamage(_damage);
         }
 
         // 히트 이펙트 스폰
         SpawnHitEffect(target.transform.position);
 
-        if (currentPierceCount > 0)
+        if (_currentPierceCount > 0)
         {
-            currentPierceCount--;
+            _currentPierceCount--;
         }
         else
         {
@@ -164,30 +164,14 @@ public class Projectile : MonoBehaviour, IPoolable
     /// </summary>
     protected void SpawnHitEffect(Vector3 position)
     {
-        if (string.IsNullOrEmpty(hitEffectPoolKey)) return;
-        if (poolManager == null || !poolManager.HasPool(hitEffectPoolKey)) return;
-
-        GameObject effectObj = poolManager.Get(hitEffectPoolKey);
-        effectObj.transform.position = position;
-
-        if (effectObj.TryGetComponent<HitEffect>(out var hitEffect))
-        {
-            hitEffect.Initialize(poolManager, hitEffectPoolKey);
-        }
+        PoolableHelper.SpawnHitEffect(_poolManager, _hitEffectPoolKey, position);
     }
     #endregion
 
     #region Pool
     protected void ReturnToPool()
     {
-        if (poolManager != null)
-        {
-            poolManager.Return(poolKey, gameObject);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        PoolableHelper.ReturnToPool(_poolManager, _poolKey, gameObject);
     }
     #endregion
 }

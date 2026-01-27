@@ -13,8 +13,9 @@ public class OrbitObject : MonoBehaviour
     private int _index;
     private float _currentAngle;
 
-    // 충돌 쿨타임 관리 (적별로 쿨타임 적용)
-    private readonly Dictionary<Collider2D, float> _hitCooldowns = new Dictionary<Collider2D, float>();
+    // 충돌 쿨타임 관리 (적별로 만료 시간 저장)
+    private readonly Dictionary<Collider2D, float> _hitExpirationTimes = new Dictionary<Collider2D, float>();
+    private readonly List<Collider2D> _expiredColliders = new List<Collider2D>(); // GC 방지용 재사용 버퍼
     private const float HitCooldown = 0.5f;
     #endregion
 
@@ -114,14 +115,8 @@ public class OrbitObject : MonoBehaviour
 
     private void ApplyScale()
     {
-        if (_spriteRenderer == null || _spriteRenderer.sprite == null) return;
-
-        // 스프라이트 원본 크기 기반 스케일 적용
-        float spriteSize = _spriteRenderer.sprite.bounds.size.x;
-        float desiredSize = _parentSkill.ObjectSize;
-        float scale = desiredSize / spriteSize;
-
-        transform.localScale = Vector3.one * scale;
+        if (_parentSkill == null) return;
+        SpriteScaleHelper.ApplySizeScale(transform, _spriteRenderer, _parentSkill.ObjectSize);
     }
 
     private void TryDealDamage(Collider2D other)
@@ -129,10 +124,12 @@ public class OrbitObject : MonoBehaviour
         if (_parentSkill == null) return;
 
         // 적 레이어 확인
-        if (((1 << other.gameObject.layer) & _parentSkill.EnemyLayer) == 0) return;
+        if (((1 << other.gameObject.layer) & _parentSkill.TargetEnemyLayer) == 0) return;
 
-        // 쿨타임 확인
-        if (_hitCooldowns.TryGetValue(other, out float cooldown) && cooldown > 0f) return;
+        // 쿨타임 확인 (만료 시간과 현재 시간 비교)
+        float currentTime = Time.time;
+        if (_hitExpirationTimes.TryGetValue(other, out float expirationTime) && currentTime < expirationTime)
+            return;
 
         // 데미지 적용
         if (other.TryGetComponent<IDamageable>(out var target))
@@ -140,24 +137,31 @@ public class OrbitObject : MonoBehaviour
             target.TakeDamage(_parentSkill.Damage);
             _parentSkill.SpawnHitEffectAt(other.transform.position);
 
-            // 쿨타임 설정
-            _hitCooldowns[other] = HitCooldown;
+            // 만료 시간 설정 (현재 시간 + 쿨타임)
+            _hitExpirationTimes[other] = currentTime + HitCooldown;
         }
     }
 
     private void UpdateHitCooldowns()
     {
-        // 쿨타임 감소 (GC 방지를 위해 리스트 대신 직접 순회)
-        var keys = new List<Collider2D>(_hitCooldowns.Keys);
-        foreach (var key in keys)
-        {
-            _hitCooldowns[key] -= Time.deltaTime;
+        if (_hitExpirationTimes.Count == 0) return;
 
-            // 쿨타임 완료된 항목 제거
-            if (_hitCooldowns[key] <= 0f)
+        float currentTime = Time.time;
+        _expiredColliders.Clear();
+
+        // 만료된 항목 수집 (값 수정 없이 비교만)
+        foreach (var kvp in _hitExpirationTimes)
+        {
+            if (currentTime >= kvp.Value)
             {
-                _hitCooldowns.Remove(key);
+                _expiredColliders.Add(kvp.Key);
             }
+        }
+
+        // 만료된 항목 제거
+        foreach (var collider in _expiredColliders)
+        {
+            _hitExpirationTimes.Remove(collider);
         }
     }
     #endregion

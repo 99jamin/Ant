@@ -32,9 +32,9 @@ public class AuraSkill : ActiveSkill
         SpawnAuraEffect();
 
         // 글로벌 스탯 변경 이벤트 구독
-        if (player != null)
+        if (_player != null)
         {
-            player.OnGlobalStatsChanged += OnGlobalStatsChanged;
+            _player.OnGlobalStatsChanged += OnGlobalStatsChanged;
         }
     }
 
@@ -66,12 +66,12 @@ public class AuraSkill : ActiveSkill
     {
         if (auraEffectPrefab == null)
         {
-            Debug.LogWarning($"[AuraSkill] 오라 프리팹이 설정되지 않았습니다: {skillData?.skillName}");
+            Debug.LogWarning($"[AuraSkill] 오라 프리팹이 설정되지 않았습니다: {_skillData?.skillName}");
             return;
         }
 
-        // 플레이어 자식으로 생성 (자동으로 따라다님)
-        GameObject auraObj = Instantiate(auraEffectPrefab, player.transform);
+        // AuraSkill 자식으로 생성
+        GameObject auraObj = Instantiate(auraEffectPrefab, transform);
         auraObj.transform.localPosition = Vector3.zero;
 
         _auraEffect = auraObj.GetComponent<AuraEffect>();
@@ -84,7 +84,7 @@ public class AuraSkill : ActiveSkill
     private void DealAuraDamage()
     {
         int count = Physics2D.OverlapCircleNonAlloc(
-            player.transform.position,
+            _player.transform.position,
             CurrentRadius,
             _hitBuffer,
             EnemyLayer
@@ -105,9 +105,9 @@ public class AuraSkill : ActiveSkill
     private void OnDestroy()
     {
         // 이벤트 구독 해제
-        if (player != null)
+        if (_player != null)
         {
-            player.OnGlobalStatsChanged -= OnGlobalStatsChanged;
+            _player.OnGlobalStatsChanged -= OnGlobalStatsChanged;
         }
 
         // 스킬이 파괴될 때 오라도 함께 정리

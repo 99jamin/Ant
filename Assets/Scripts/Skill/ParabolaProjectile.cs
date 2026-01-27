@@ -14,15 +14,15 @@ public class ParabolaProjectile : Projectile
     #endregion
 
     #region Private Fields
-    private Vector2 velocity;
-    private float horizontalDirection;
+    private Vector2 _velocity;
+    private float _horizontalDirection;
     #endregion
 
     #region Overrides
     public override void OnSpawnFromPool()
     {
         base.OnSpawnFromPool();
-        velocity = Vector2.zero;
+        _velocity = Vector2.zero;
     }
 
     public override void Initialize(
@@ -38,15 +38,15 @@ public class ParabolaProjectile : Projectile
     {
         base.Initialize(damage, dir, speed, pierce, lifetime, areaMultiplier, pool, key, hitEffectKey);
 
-        horizontalDirection = dir.x >= 0 ? 1f : -1f;
+        _horizontalDirection = dir.x >= 0 ? 1f : -1f;
 
         // dir.y를 활용하여 각 투사체마다 고유한 퍼짐 값 생성
         // Abs를 사용하면 +/-가 같은 값이 되므로 dir.y를 직접 사용
         float spreadMultiplier = 1f + (dir.y + 0.5f) * 2f;
-        float spreadHorizontal = horizontalDirection * horizontalSpeed * spreadMultiplier;
+        float spreadHorizontal = _horizontalDirection * horizontalSpeed * spreadMultiplier;
 
         // speed를 수직 발사력으로 사용
-        velocity = new Vector2(spreadHorizontal, speed);
+        _velocity = new Vector2(spreadHorizontal, speed);
     }
 
     protected override void FixedUpdate()
@@ -64,13 +64,13 @@ public class ParabolaProjectile : Projectile
     private void MoveAxe()
     {
         // 중력 적용
-        velocity.y -= gravity * Time.fixedDeltaTime;
+        _velocity.y -= gravity * Time.fixedDeltaTime;
 
         // 위치 업데이트
-        transform.position += (Vector3)(velocity * Time.fixedDeltaTime);
+        transform.position += (Vector3)(_velocity * Time.fixedDeltaTime);
 
         // 회전 (도끼가 빙글빙글 도는 효과)
-        float rotationDirection = -horizontalDirection; // 발사 방향 반대로 회전
+        float rotationDirection = -_horizontalDirection; // 발사 방향 반대로 회전
         transform.Rotate(0f, 0f, rotationSpeed * rotationDirection * Time.fixedDeltaTime);
     }
     #endregion

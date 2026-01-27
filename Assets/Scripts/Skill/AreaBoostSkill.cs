@@ -20,17 +20,17 @@ public class AreaBoostSkill : PassiveSkill
     #region Overrides
     protected override void OnApplyEffect()
     {
-        if (player == null) return;
+        if (_player == null) return;
 
         _appliedBonus = AreaBonus;
-        player.GlobalAreaMultiplier += _appliedBonus;
+        _player.GlobalAreaMultiplier += _appliedBonus;
     }
 
     protected override void OnRemoveEffect()
     {
-        if (player == null) return;
+        if (_player == null) return;
 
-        player.GlobalAreaMultiplier -= _appliedBonus;
+        _player.GlobalAreaMultiplier -= _appliedBonus;
         _appliedBonus = 0f;
     }
     #endregion
