@@ -6,11 +6,6 @@ using UnityEngine;
 /// </summary>
 public class AuraSkill : ActiveSkill
 {
-    #region Serialized Fields
-    [Header("오라 프리팹")]
-    [SerializeField] private GameObject auraEffectPrefab;
-    #endregion
-
     #region Private Fields
     private AuraEffect _auraEffect;
 
@@ -19,6 +14,11 @@ public class AuraSkill : ActiveSkill
     #endregion
 
     #region Properties
+    /// <summary>
+    /// 오라 이펙트 프리팹
+    /// </summary>
+    private GameObject Prefab => _skillData?.skillObjectPrefab;
+
     /// <summary>
     /// 현재 오라 반경 (글로벌 범위 배율 적용)
     /// </summary>
@@ -64,14 +64,14 @@ public class AuraSkill : ActiveSkill
     #region Private Methods
     private void SpawnAuraEffect()
     {
-        if (auraEffectPrefab == null)
+        if (Prefab == null)
         {
             Debug.LogWarning($"[AuraSkill] 오라 프리팹이 설정되지 않았습니다: {_skillData?.skillName}");
             return;
         }
 
         // AuraSkill 자식으로 생성
-        GameObject auraObj = Instantiate(auraEffectPrefab, transform);
+        GameObject auraObj = Instantiate(Prefab, transform);
         auraObj.transform.localPosition = Vector3.zero;
 
         _auraEffect = auraObj.GetComponent<AuraEffect>();
@@ -90,11 +90,22 @@ public class AuraSkill : ActiveSkill
             EnemyLayer
         );
 
+        Vector2 playerPos = _player.transform.position;
+
         for (int i = 0; i < count; i++)
         {
             if (_hitBuffer[i].TryGetComponent<IDamageable>(out var target))
             {
-                target.TakeDamage(ActualDamage);
+                // 플레이어에서 적 방향으로 넉백
+                if (_hitBuffer[i].TryGetComponent<Enemy>(out var enemy))
+                {
+                    Vector2 knockbackDir = ((Vector2)enemy.transform.position - playerPos).normalized;
+                    enemy.TakeDamage(ActualDamage, knockbackDir);
+                }
+                else
+                {
+                    target.TakeDamage(ActualDamage);
+                }
                 SpawnHitEffect(_hitBuffer[i].transform.position);
             }
         }

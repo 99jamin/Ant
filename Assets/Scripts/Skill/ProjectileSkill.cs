@@ -6,26 +6,14 @@ using UnityEngine;
 /// </summary>
 public class ProjectileSkill : ActiveSkill
 {
-    #region Serialized Fields
-    [Header("투사체 프리팹")]
-    [SerializeField] private GameObject projectilePrefab;
-    #endregion
-
     #region Private Fields
     private string _poolKey;
     #endregion
 
     #region Properties
     private PoolManager PoolManager => Managers.Instance.Pool;
-
-    /// <summary>
-    /// 투사체 퍼짐 각도 (SO에서 가져옴)
-    /// </summary>
+    private GameObject Prefab => _skillData?.skillObjectPrefab;
     private float SpreadAngle => _skillData?.spreadAngle ?? 15f;
-
-    /// <summary>
-    /// 발사 방향 타입 (SO에서 가져옴)
-    /// </summary>
     private FireDirectionType FireDirection => _skillData?.fireDirection ?? FireDirectionType.TowardEnemy;
     #endregion
 
@@ -34,13 +22,13 @@ public class ProjectileSkill : ActiveSkill
     {
         base.OnInitialize();
 
-        if (projectilePrefab != null && PoolManager != null)
+        if (Prefab != null && PoolManager != null)
         {
             _poolKey = $"Projectile_{_skillData.skillName}";
 
             if (!PoolManager.HasPool(_poolKey))
             {
-                PoolManager.CreatePool(_poolKey, projectilePrefab, 20);
+                PoolManager.CreatePool(_poolKey, Prefab, 20);
             }
         }
     }
@@ -89,7 +77,6 @@ public class ProjectileSkill : ActiveSkill
 
         for (int i = 0; i < count; i++)
         {
-            // 첫 번째는 기본 궤적, 이후는 점점 더 퍼짐
             float spreadOffset;
             if (i == 0)
             {
@@ -121,19 +108,29 @@ public class ProjectileSkill : ActiveSkill
         else
         {
             Debug.LogError($"[ProjectileSkill] 풀이 생성되지 않았습니다: {_poolKey}");
-            projObj = Instantiate(projectilePrefab);
+            projObj = Instantiate(Prefab);
         }
 
         projObj.transform.position = _player.transform.position;
+
+        // 포물선 투사체인 경우 설정 주입
+        if (projObj.TryGetComponent<ParabolaProjectile>(out var parabola))
+        {
+            parabola.InitializeParabolaSettings(
+                CurrentLevelData?.gravity ?? 20f,
+                CurrentLevelData?.horizontalSpeed ?? 2f,
+                CurrentLevelData?.projectileRotationSpeed ?? 360f
+            );
+        }
 
         if (projObj.TryGetComponent<Projectile>(out var projectile))
         {
             projectile.Initialize(
                 ActualDamage,
                 direction,
-                CurrentLevelData?.speed ?? 10f,
+                CurrentLevelData?.projectileSpeed ?? 10f,
                 CurrentLevelData?.pierceCount ?? 0,
-                CurrentLevelData?.lifetime ?? 5f,
+                CurrentLevelData?.projectileLifetime ?? 5f,
                 ActualAreaMultiplier,
                 PoolManager,
                 _poolKey,
