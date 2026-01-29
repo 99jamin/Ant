@@ -240,6 +240,7 @@ public class Player : MonoBehaviour, IDamageable
     private void Die()
     {
         _controller.SetMovementEnabled(false);
+        _controller.PlayDeathAnimation();
         OnDeath?.Invoke();
     }
 

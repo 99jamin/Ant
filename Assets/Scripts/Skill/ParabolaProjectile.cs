@@ -6,16 +6,14 @@ using UnityEngine;
 /// </summary>
 public class ParabolaProjectile : Projectile
 {
-    #region Serialized Fields
-    [Header("포물선 설정")]
-    [SerializeField] private float gravity = 20f;
-    [SerializeField] private float horizontalSpeed = 2f;
-    [SerializeField] private float rotationSpeed = 360f;
-    #endregion
-
     #region Private Fields
     private Vector2 _velocity;
     private float _horizontalDirection;
+
+    // 포물선 설정 (SO에서 주입)
+    private float _gravity;
+    private float _horizontalSpeed;
+    private float _rotationSpeed;
     #endregion
 
     #region Overrides
@@ -41,9 +39,8 @@ public class ParabolaProjectile : Projectile
         _horizontalDirection = dir.x >= 0 ? 1f : -1f;
 
         // dir.y를 활용하여 각 투사체마다 고유한 퍼짐 값 생성
-        // Abs를 사용하면 +/-가 같은 값이 되므로 dir.y를 직접 사용
         float spreadMultiplier = 1f + (dir.y + 0.5f) * 2f;
-        float spreadHorizontal = _horizontalDirection * horizontalSpeed * spreadMultiplier;
+        float spreadHorizontal = _horizontalDirection * _horizontalSpeed * spreadMultiplier;
 
         // speed를 수직 발사력으로 사용
         _velocity = new Vector2(spreadHorizontal, speed);
@@ -51,7 +48,7 @@ public class ParabolaProjectile : Projectile
 
     protected override void FixedUpdate()
     {
-        MoveAxe();
+        MoveParabola();
     }
 
     protected override void Move()
@@ -60,18 +57,30 @@ public class ParabolaProjectile : Projectile
     }
     #endregion
 
-    #region Axe Movement
-    private void MoveAxe()
+    #region Public Methods
+    /// <summary>
+    /// 포물선 설정 초기화 (ProjectileSkill에서 호출)
+    /// </summary>
+    public void InitializeParabolaSettings(float gravity, float horizontalSpeed, float rotationSpeed)
+    {
+        _gravity = gravity;
+        _horizontalSpeed = horizontalSpeed;
+        _rotationSpeed = rotationSpeed;
+    }
+    #endregion
+
+    #region Parabola Movement
+    private void MoveParabola()
     {
         // 중력 적용
-        _velocity.y -= gravity * Time.fixedDeltaTime;
+        _velocity.y -= _gravity * Time.fixedDeltaTime;
 
         // 위치 업데이트
         transform.position += (Vector3)(_velocity * Time.fixedDeltaTime);
 
         // 회전 (도끼가 빙글빙글 도는 효과)
-        float rotationDirection = -_horizontalDirection; // 발사 방향 반대로 회전
-        transform.Rotate(0f, 0f, rotationSpeed * rotationDirection * Time.fixedDeltaTime);
+        float rotationDirection = -_horizontalDirection;
+        transform.Rotate(0f, 0f, _rotationSpeed * rotationDirection * Time.fixedDeltaTime);
     }
     #endregion
 }

@@ -143,7 +143,15 @@ public class Projectile : MonoBehaviour, IPoolable
     {
         if (target.TryGetComponent<IDamageable>(out var damageable))
         {
-            damageable.TakeDamage(_damage);
+            // 투사체 이동 방향으로 넉백
+            if (target.TryGetComponent<Enemy>(out var enemy))
+            {
+                enemy.TakeDamage(_damage, _direction);
+            }
+            else
+            {
+                damageable.TakeDamage(_damage);
+            }
         }
 
         // 히트 이펙트 스폰

@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1936302413931603998}
   - component: {fileID: 4069933901366783292}
   - component: {fileID: 140668030782511084}
-  - component: {fileID: 4965312852658348183}
   - component: {fileID: 5728114874293567326}
   - component: {fileID: 1669246161140683958}
-  m_Layer: 0
+  - component: {fileID: 4965312852658348183}
+  m_Layer: 13
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 4723107735738678597, guid: c1cdd26cc09ad224884556bc4d8296ae,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -116,18 +116,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4965312852658348183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8954151001125139887}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2585c28966efc6845be10e26ca836950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &5728114874293567326
 Animator:
   serializedVersion: 5
@@ -184,3 +172,21 @@ CapsuleCollider2D:
   m_Offset: {x: 0.012086868, y: -0.10807307}
   m_Size: {x: 0.14343783, y: 0.21898061}
   m_Direction: 0
+--- !u!114 &4965312852658348183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954151001125139887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2585c28966efc6845be10e26ca836950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _knockbackForce: 1
+  _knockbackDuration: 0.1
+  _invincibilityDuration: 0.3
+  _flashMaterial: {fileID: 2100000, guid: 037eef54c3543364d93d4651ad50a7ee, type: 2}
+  _hitFlashDuration: 0.2
+  _deathAnimationDuration: 0.7

@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float baseMoveSpeed = 5f;
 
     [Header("피격 효과")]
-    [SerializeField] private Color damageFlashColor = Color.red;
+    [SerializeField] private Material flashMaterial;
     [SerializeField] private float flashDuration = 0.1f;
     [SerializeField] private int flashCount = 3;
     #endregion
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     #region Private Fields
     // Animator Parameter Hash (성능 최적화)
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
-    private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
+    private static readonly int DeadTrigger = Animator.StringToHash("Dead");
 
     // Cached Components
     private Rigidbody2D _rb;
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private bool _isMovementEnabled = true;
 
     // Damage Flash
-    private Color _originalColor;
+    private Material _originalMaterial;
     private Coroutine _flashCoroutine;
     #endregion
 
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
-        _originalColor = _spriteRenderer.color;
+        _originalMaterial = _spriteRenderer.material;
     }
 
     private void ConfigureRigidbody()
@@ -127,12 +127,15 @@ public class PlayerController : MonoBehaviour
         if (!isEnabled)
         {
             _rb.velocity = Vector2.zero;
-            _animator.SetBool(IsDeadHash, true);
         }
-        else
-        {
-            _animator.SetBool(IsDeadHash, false);
-        }
+    }
+
+    /// <summary>
+    /// 사망 애니메이션 트리거 발동
+    /// </summary>
+    public void PlayDeathAnimation()
+    {
+        _animator.SetTrigger(DeadTrigger);
     }
 
     /// <summary>
@@ -191,13 +194,19 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DamageFlashCoroutine()
     {
+        if (flashMaterial == null)
+        {
+            _flashCoroutine = null;
+            yield break;
+        }
+
         WaitForSeconds flashWait = new WaitForSeconds(flashDuration);
 
         for (int i = 0; i < flashCount; i++)
         {
-            _spriteRenderer.color = damageFlashColor;
+            _spriteRenderer.material = flashMaterial;
             yield return flashWait;
-            _spriteRenderer.color = _originalColor;
+            _spriteRenderer.material = _originalMaterial;
             yield return flashWait;
         }
 

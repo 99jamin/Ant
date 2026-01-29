@@ -7,34 +7,35 @@ using UnityEngine;
 /// </summary>
 public class OrbitSkill : ActiveSkill
 {
-    #region Serialized Fields
-    [Header("회전 오브젝트 프리팹")]
-    [SerializeField] private GameObject orbitObjectPrefab;
-
-    [Header("회전 설정")]
-    [SerializeField] private float baseOrbitRadius = 1.5f;
-    [SerializeField] private float baseObjectSize = 0.5f;
-    #endregion
-
     #region Private Fields
     private readonly List<OrbitObject> _orbitObjects = new List<OrbitObject>();
     #endregion
 
     #region Properties
     /// <summary>
-    /// 회전 반경 (고정값)
+    /// 회전 오브젝트 프리팹
     /// </summary>
-    public float OrbitRadius => baseOrbitRadius;
+    private GameObject Prefab => _skillData?.skillObjectPrefab;
 
     /// <summary>
-    /// 회전 속도 (Speed 적용, 도/초)
+    /// 회전 반경 (LevelData에서 가져옴)
     /// </summary>
-    public float RotationSpeed => CurrentLevelData?.speed ?? 90f;
+    public float OrbitRadius => CurrentLevelData?.orbitRadius ?? 1.5f;
+
+    /// <summary>
+    /// 오브젝트 기본 크기 (LevelData에서 가져옴)
+    /// </summary>
+    private float BaseObjectSize => CurrentLevelData?.orbitObjectSize ?? 0.5f;
+
+    /// <summary>
+    /// 회전 속도 (LevelData에서 가져옴, 도/초)
+    /// </summary>
+    public float RotationSpeed => CurrentLevelData?.orbitSpeed ?? 90f;
 
     /// <summary>
     /// 오브젝트 크기 (AreaMultiplier 적용)
     /// </summary>
-    public float ObjectSize => baseObjectSize * ActualAreaMultiplier;
+    public float ObjectSize => BaseObjectSize * ActualAreaMultiplier;
 
     /// <summary>
     /// 데미지 (글로벌 배율 적용)
@@ -52,16 +53,16 @@ public class OrbitSkill : ActiveSkill
     public LayerMask TargetEnemyLayer => EnemyLayer;
 
     /// <summary>
-    /// 현재 투사체(오브젝트) 개수
+    /// 현재 오브젝트 개수 (LevelData에서 가져옴)
     /// </summary>
-    private int CurrentProjectileCount => CurrentLevelData?.projectileCount ?? 1;
+    private int CurrentObjectCount => CurrentLevelData?.orbitObjectCount ?? 1;
     #endregion
 
     #region Overrides
     protected override void OnInitialize()
     {
         base.OnInitialize();
-        SpawnOrbitObjects(CurrentProjectileCount);
+        SpawnOrbitObjects(CurrentObjectCount);
 
         // 글로벌 스탯 변경 이벤트 구독
         if (_player != null)
@@ -87,7 +88,7 @@ public class OrbitSkill : ActiveSkill
     {
         base.OnLevelUp();
 
-        int targetCount = CurrentProjectileCount;
+        int targetCount = CurrentObjectCount;
         int currentCount = _orbitObjects.Count;
 
         // 오브젝트 수 증가 시 추가 생성
@@ -123,7 +124,7 @@ public class OrbitSkill : ActiveSkill
     #region Private Methods
     private void SpawnOrbitObjects(int count)
     {
-        if (orbitObjectPrefab == null)
+        if (Prefab == null)
         {
             Debug.LogWarning($"[OrbitSkill] 회전 오브젝트 프리팹이 설정되지 않았습니다: {_skillData?.skillName}");
             return;
@@ -138,7 +139,7 @@ public class OrbitSkill : ActiveSkill
     private void SpawnSingleOrbitObject(int index, int totalCount)
     {
         // OrbitSkill 자식으로 생성 (풀 사용 안 함 - 개수가 적고 스킬과 생명주기 동일)
-        GameObject obj = Instantiate(orbitObjectPrefab, transform);
+        GameObject obj = Instantiate(Prefab, transform);
 
         OrbitObject orbitObject = obj.GetComponent<OrbitObject>();
         if (orbitObject != null)

@@ -134,7 +134,16 @@ public class OrbitObject : MonoBehaviour
         // 데미지 적용
         if (other.TryGetComponent<IDamageable>(out var target))
         {
-            target.TakeDamage(_parentSkill.Damage);
+            // 회전 오브젝트에서 적 방향으로 넉백
+            if (other.TryGetComponent<Enemy>(out var enemy))
+            {
+                Vector2 knockbackDir = ((Vector2)enemy.transform.position - (Vector2)transform.position).normalized;
+                enemy.TakeDamage(_parentSkill.Damage, knockbackDir);
+            }
+            else
+            {
+                target.TakeDamage(_parentSkill.Damage);
+            }
             _parentSkill.SpawnHitEffectAt(other.transform.position);
 
             // 만료 시간 설정 (현재 시간 + 쿨타임)

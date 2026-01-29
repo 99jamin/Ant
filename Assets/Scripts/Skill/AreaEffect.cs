@@ -141,11 +141,22 @@ public class AreaEffect : MonoBehaviour, IPoolable
             _enemyLayer
         );
 
+        Vector2 center = transform.position;
+
         for (int i = 0; i < count; i++)
         {
             if (_hitBuffer[i].TryGetComponent<IDamageable>(out var target))
             {
-                target.TakeDamage(_damage);
+                // 장판 중심에서 적 방향으로 넉백
+                if (_hitBuffer[i].TryGetComponent<Enemy>(out var enemy))
+                {
+                    Vector2 knockbackDir = ((Vector2)enemy.transform.position - center).normalized;
+                    enemy.TakeDamage(_damage, knockbackDir);
+                }
+                else
+                {
+                    target.TakeDamage(_damage);
+                }
                 SpawnHitEffect(_hitBuffer[i].transform.position);
             }
         }

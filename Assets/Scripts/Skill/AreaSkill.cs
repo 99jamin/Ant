@@ -6,11 +6,6 @@ using UnityEngine;
 /// </summary>
 public class AreaSkill : ActiveSkill
 {
-    #region Serialized Fields
-    [Header("장판 프리팹")]
-    [SerializeField] private GameObject areaEffectPrefab;
-    #endregion
-
     #region Private Fields
     private string _areaPoolKey;
     #endregion
@@ -19,9 +14,19 @@ public class AreaSkill : ActiveSkill
     private PoolManager PoolManager => Managers.Instance.Pool;
 
     /// <summary>
-    /// 틱 데미지 간격 (SO에서 가져옴)
+    /// 장판 이펙트 프리팹
     /// </summary>
-    private float TickInterval => _skillData?.tickInterval ?? 0.5f;
+    private GameObject Prefab => _skillData?.skillObjectPrefab;
+
+    /// <summary>
+    /// 틱 데미지 간격 (LevelData에서 가져옴)
+    /// </summary>
+    private float TickInterval => CurrentLevelData?.tickInterval ?? 0.5f;
+
+    /// <summary>
+    /// 장판 지속 시간 (LevelData에서 가져옴)
+    /// </summary>
+    private float AreaLifetime => CurrentLevelData?.areaLifetime ?? 3f;
     #endregion
 
     #region Overrides
@@ -29,13 +34,13 @@ public class AreaSkill : ActiveSkill
     {
         base.OnInitialize();
 
-        if (areaEffectPrefab != null && PoolManager != null)
+        if (Prefab != null && PoolManager != null)
         {
             _areaPoolKey = $"AreaEffect_{_skillData.skillName}";
 
             if (!PoolManager.HasPool(_areaPoolKey))
             {
-                PoolManager.CreatePool(_areaPoolKey, areaEffectPrefab, 5);
+                PoolManager.CreatePool(_areaPoolKey, Prefab, 5);
             }
         }
     }
@@ -68,9 +73,9 @@ public class AreaSkill : ActiveSkill
         {
             areaEffect.Initialize(
                 ActualDamage,
-                ActualAreaMultiplier,       // radius로 사용
+                ActualAreaMultiplier,
                 TickInterval,
-                CurrentLevelData?.lifetime ?? 3f,
+                AreaLifetime,
                 EnemyLayer,
                 PoolManager,
                 _areaPoolKey,

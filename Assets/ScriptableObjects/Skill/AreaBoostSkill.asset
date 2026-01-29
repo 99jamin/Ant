@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f838c8c891b7d94fa7b4e20648e133d, type: 3}
+  m_Name: AreaBoostSkill
+  m_EditorClassIdentifier: 
+  _skillName: "\uC2A4\uD0AC \uD06C\uAE30 \uC99D\uAC00"
+  _description: 
+  _icon: {fileID: 0}
+  _skillPrefab: {fileID: 8015138931750341506, guid: 7365103cf7fe72c4db53c44d41224ade,
+    type: 3}
+  _skillObjectPrefab: {fileID: 0}
+  _hitEffectPrefab: {fileID: 0}
+  _detectRange: 0
+  _spreadAngle: 0
+  _fireDirection: 0
+  _levels:
+  - damage: 0
+    cooldown: 0
+    areaMultiplier: 0.5
+    projectileSpeed: 0
+    projectileLifetime: 0
+    projectileCount: 0
+    pierceCount: 0
+    gravity: 0
+    horizontalSpeed: 0
+    projectileRotationSpeed: 0
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: 

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f838c8c891b7d94fa7b4e20648e133d, type: 3}
+  m_Name: ParabolaShot
+  m_EditorClassIdentifier: 
+  _skillName: "\uD3EC\uBB3C\uC120"
+  _description: 
+  _icon: {fileID: 0}
+  _skillPrefab: {fileID: 3294117024582719242, guid: 7273c415aded3134d9a1b383fd38717c,
+    type: 3}
+  _skillObjectPrefab: {fileID: 2895795182145411560, guid: 4b32ed3f79f6a844cb8bac5b0ee2c9a3,
+    type: 3}
+  _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
+    type: 3}
+  _detectRange: 3
+  _spreadAngle: 3
+  _fireDirection: 1
+  _levels:
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 1
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 3
+    pierceCount: 3
+    gravity: 20
+    horizontalSpeed: 2
+    projectileRotationSpeed: 360
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: 

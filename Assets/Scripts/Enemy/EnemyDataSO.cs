@@ -32,6 +32,9 @@ public class EnemyDataSO : ScriptableObject
 
     [Tooltip("처치 시 획득 점수")]
     [SerializeField] [Min(0f)] private float scorePoints = 10f;
+
+    [Tooltip("처치 시 드랍하는 경험치")]
+    [SerializeField] [Min(0f)] private float expAmount = 10f;
     #endregion
 
     #region Properties (Read-Only)
@@ -42,6 +45,7 @@ public class EnemyDataSO : ScriptableObject
     public float Speed => speed;
     public float Damage => damage;
     public float ScorePoints => scorePoints;
+    public float ExpAmount => expAmount;
     #endregion
 
     #region Validation
