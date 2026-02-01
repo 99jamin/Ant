@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -6700954015075616275}
   - component: {fileID: 1991302517107052015}
   m_Layer: 0
-  m_Name: AreaEffect
+  m_Name: AreaObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

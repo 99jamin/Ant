@@ -17,9 +17,9 @@ public abstract class ActiveSkill : BaseSkill
 
     #region Properties
     /// <summary>
-    /// 적 탐지 범위 (SO에서 가져옴)
+    /// 적 탐지 범위 (레벨 데이터에서 가져옴)
     /// </summary>
-    protected float DetectRange => _skillData?.detectRange ?? 10f;
+    protected float DetectRange => CurrentLevelData?.detectRange ?? 10f;
 
     /// <summary>
     /// 적 레이어 (Managers에서 가져옴)
@@ -191,14 +191,6 @@ public abstract class ActiveSkill : BaseSkill
         {
             PoolManager.CreatePool(_hitEffectPoolKey, _skillData.hitEffectPrefab, 10);
         }
-    }
-
-    /// <summary>
-    /// 히트 이펙트를 지정된 위치에 스폰합니다.
-    /// </summary>
-    protected void SpawnHitEffect(Vector3 position)
-    {
-        PoolableHelper.SpawnHitEffect(PoolManager, _hitEffectPoolKey, position);
     }
     #endregion
 }

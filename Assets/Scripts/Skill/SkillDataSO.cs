@@ -38,12 +38,6 @@ public class SkillDataSO : ScriptableObject
     [SerializeField] private GameObject _hitEffectPrefab;
     #endregion
 
-    #region Common Settings
-    [Header("공통 설정")]
-    [Tooltip("적 탐지 범위")]
-    [SerializeField] private float _detectRange = 10f;
-    #endregion
-
     #region Projectile Settings
     [Header("투사체 설정 (Projectile 스킬용)")]
     [Tooltip("투사체 퍼짐 각도")]
@@ -65,7 +59,6 @@ public class SkillDataSO : ScriptableObject
     public GameObject skillPrefab => _skillPrefab;
     public GameObject skillObjectPrefab => _skillObjectPrefab;
     public GameObject hitEffectPrefab => _hitEffectPrefab;
-    public float detectRange => _detectRange;
     public float spreadAngle => _spreadAngle;
     public FireDirectionType fireDirection => _fireDirection;
     public IReadOnlyList<SkillLevelData> levels => _levels;
@@ -84,6 +77,8 @@ public class SkillLevelData
     public float damage;
     public float cooldown;
     public float areaMultiplier = 1f;
+    [Tooltip("적 탐지 범위")]
+    public float detectRange = 10f;
 
     [Header("투사체 (Projectile)")]
     [Tooltip("투사체 속도")]
@@ -95,14 +90,6 @@ public class SkillLevelData
     [Tooltip("관통 수 (0이면 관통 없음)")]
     public int pierceCount;
 
-    [Header("포물선 투사체 (Parabola)")]
-    [Tooltip("중력")]
-    public float gravity = 20f;
-    [Tooltip("수평 속도")]
-    public float horizontalSpeed = 2f;
-    [Tooltip("투사체 회전 속도")]
-    public float projectileRotationSpeed = 360f;
-
     [Header("회전 (Orbit)")]
     [Tooltip("회전 반경")]
     public float orbitRadius = 1.5f;
@@ -113,7 +100,7 @@ public class SkillLevelData
     [Tooltip("회전 오브젝트 수")]
     public int orbitObjectCount = 1;
 
-    [Header("장판 (Area)")]
+    [Header("지속 데미지 (Area, Orbit, Aura 공통)")]
     [Tooltip("틱 데미지 간격")]
     public float tickInterval = 0.5f;
     [Tooltip("장판 지속 시간")]

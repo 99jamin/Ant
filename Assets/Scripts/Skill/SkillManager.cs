@@ -54,10 +54,21 @@ public class SkillManager : MonoBehaviour
             return;
         }
 
+        // 플레이어 사망 이벤트 구독
+        player.OnDeath += OnPlayerDeath;
+
         // 시작 스킬 추가
         if (startingSkill != null)
         {
             AddSkill(startingSkill);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (player != null)
+        {
+            player.OnDeath -= OnPlayerDeath;
         }
     }
     #endregion
@@ -277,6 +288,20 @@ public class SkillManager : MonoBehaviour
     #endregion
 
     #region Private Methods
+    /// <summary>
+    /// 플레이어 사망 시 모든 스킬 비활성화
+    /// </summary>
+    private void OnPlayerDeath()
+    {
+        foreach (var skill in activeSkills)
+        {
+            if (skill != null)
+            {
+                skill.gameObject.SetActive(false);
+            }
+        }
+    }
+
     /// <summary>
     /// Fisher-Yates 셔플
     /// </summary>

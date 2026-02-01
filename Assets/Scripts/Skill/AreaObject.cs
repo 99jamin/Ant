@@ -1,10 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// 장판 효과 컴포넌트
+/// 장판 오브젝트
 /// 일정 범위 내 적에게 틱 데미지를 주고, 지속 시간 후 풀에 반환됩니다.
 /// </summary>
-public class AreaEffect : MonoBehaviour, IPoolable
+public class AreaObject : MonoBehaviour, IPoolable
 {
     #region Serialized Fields
     [Header("디버그")]
@@ -145,20 +145,9 @@ public class AreaEffect : MonoBehaviour, IPoolable
 
         for (int i = 0; i < count; i++)
         {
-            if (_hitBuffer[i].TryGetComponent<IDamageable>(out var target))
-            {
-                // 장판 중심에서 적 방향으로 넉백
-                if (_hitBuffer[i].TryGetComponent<Enemy>(out var enemy))
-                {
-                    Vector2 knockbackDir = ((Vector2)enemy.transform.position - center).normalized;
-                    enemy.TakeDamage(_damage, knockbackDir);
-                }
-                else
-                {
-                    target.TakeDamage(_damage);
-                }
-                SpawnHitEffect(_hitBuffer[i].transform.position);
-            }
+            Vector2 knockbackDir = ((Vector2)_hitBuffer[i].transform.position - center).normalized;
+            DamageHelper.DealDamageWithKnockback(_hitBuffer[i], _damage, knockbackDir);
+            SpawnHitEffect(_hitBuffer[i].transform.position);
         }
     }
 
