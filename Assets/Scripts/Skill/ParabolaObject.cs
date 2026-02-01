@@ -1,19 +1,22 @@
 using UnityEngine;
 
 /// <summary>
-/// 도끼형 포물선 투사체
+/// 포물선 투사체 오브젝트
 /// 위로 올라갔다가 중력에 의해 떨어지는 궤적을 그립니다.
 /// </summary>
-public class ParabolaProjectile : Projectile
+public class ParabolaObject : ProjectileObject
 {
+    #region Serialized Fields
+    [Header("포물선 설정")]
+    [SerializeField] private float _gravity = 20f;
+    [SerializeField] private float _horizontalSpeed = 2f;
+    [SerializeField] private float _rotationSpeed = 360f;
+    #endregion
+
     #region Private Fields
     private Vector2 _velocity;
     private float _horizontalDirection;
-
-    // 포물선 설정 (SO에서 주입)
-    private float _gravity;
-    private float _horizontalSpeed;
-    private float _rotationSpeed;
+    private float _verticalSpeed;
     #endregion
 
     #region Overrides
@@ -42,40 +45,21 @@ public class ParabolaProjectile : Projectile
         float spreadMultiplier = 1f + (dir.y + 0.5f) * 2f;
         float spreadHorizontal = _horizontalDirection * _horizontalSpeed * spreadMultiplier;
 
-        // speed를 수직 발사력으로 사용
-        _velocity = new Vector2(spreadHorizontal, speed);
+        // speed를 수직 발사력으로 사용하여 초기 속도 설정
+        _verticalSpeed = speed;
+        _velocity = new Vector2(spreadHorizontal, _verticalSpeed);
     }
 
-    protected override void FixedUpdate()
-    {
-        MoveParabola();
-    }
-
-    protected override void Move()
-    {
-        // 기본 Move 사용 안 함
-    }
-    #endregion
-
-    #region Public Methods
     /// <summary>
-    /// 포물선 설정 초기화 (ProjectileSkill에서 호출)
+    /// 포물선 이동: 중력을 적용하여 위치를 업데이트합니다.
     /// </summary>
-    public void InitializeParabolaSettings(float gravity, float horizontalSpeed, float rotationSpeed)
-    {
-        _gravity = gravity;
-        _horizontalSpeed = horizontalSpeed;
-        _rotationSpeed = rotationSpeed;
-    }
-    #endregion
-
-    #region Parabola Movement
-    private void MoveParabola()
+    protected override void Move()
     {
         // 중력 적용
         _velocity.y -= _gravity * Time.fixedDeltaTime;
 
-        // 위치 업데이트
+        // Rigidbody를 통한 이동 대신 직접 위치 업데이트
+        _rb.velocity = Vector2.zero;
         transform.position += (Vector3)(_velocity * Time.fixedDeltaTime);
 
         // 회전 (도끼가 빙글빙글 도는 효과)

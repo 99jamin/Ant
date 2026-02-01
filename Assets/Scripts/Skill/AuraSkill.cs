@@ -3,19 +3,17 @@ using UnityEngine;
 /// <summary>
 /// 오라 스킬 (마늘형)
 /// 플레이어 주변에 영구적인 오라를 생성하여 범위 내 적에게 지속 데미지를 줍니다.
+/// 데미지 처리는 AuraObject에서 담당합니다.
 /// </summary>
 public class AuraSkill : ActiveSkill
 {
     #region Private Fields
-    private AuraEffect _auraEffect;
-
-    // GC 방지용 버퍼
-    private readonly Collider2D[] _hitBuffer = new Collider2D[32];
+    private AuraObject _auraObject;
     #endregion
 
     #region Properties
     /// <summary>
-    /// 오라 이펙트 프리팹
+    /// 오라 오브젝트 프리팹
     /// </summary>
     private GameObject Prefab => _skillData?.skillObjectPrefab;
 
@@ -23,13 +21,18 @@ public class AuraSkill : ActiveSkill
     /// 현재 오라 반경 (글로벌 범위 배율 적용)
     /// </summary>
     private float CurrentRadius => ActualAreaMultiplier;
+
+    /// <summary>
+    /// 현재 틱 간격
+    /// </summary>
+    private float TickInterval => CurrentLevelData?.tickInterval ?? 0.5f;
     #endregion
 
     #region Overrides
     protected override void OnInitialize()
     {
         base.OnInitialize();
-        SpawnAuraEffect();
+        SpawnAuraObject();
 
         // 글로벌 스탯 변경 이벤트 구독
         if (_player != null)
@@ -40,7 +43,7 @@ public class AuraSkill : ActiveSkill
 
     protected override void Activate()
     {
-        DealAuraDamage();
+        // 데미지 처리는 AuraObject에서 tickInterval 기반으로 자체 처리
     }
 
     protected override bool RequiresTarget()
@@ -52,17 +55,12 @@ public class AuraSkill : ActiveSkill
     protected override void OnLevelUp()
     {
         base.OnLevelUp();
-
-        // 레벨업 시 오라 범위 업데이트
-        if (_auraEffect != null)
-        {
-            _auraEffect.UpdateRadius(CurrentRadius);
-        }
+        UpdateAuraStats();
     }
     #endregion
 
     #region Private Methods
-    private void SpawnAuraEffect()
+    private void SpawnAuraObject()
     {
         if (Prefab == null)
         {
@@ -74,40 +72,25 @@ public class AuraSkill : ActiveSkill
         GameObject auraObj = Instantiate(Prefab, transform);
         auraObj.transform.localPosition = Vector3.zero;
 
-        _auraEffect = auraObj.GetComponent<AuraEffect>();
-        if (_auraEffect != null)
+        _auraObject = auraObj.GetComponent<AuraObject>();
+        if (_auraObject != null)
         {
-            _auraEffect.Initialize(CurrentRadius);
+            _auraObject.Initialize(
+                CurrentRadius,
+                ActualDamage,
+                TickInterval,
+                EnemyLayer,
+                Managers.Instance.Pool,
+                _hitEffectPoolKey
+            );
         }
     }
 
-    private void DealAuraDamage()
+    private void UpdateAuraStats()
     {
-        int count = Physics2D.OverlapCircleNonAlloc(
-            _player.transform.position,
-            CurrentRadius,
-            _hitBuffer,
-            EnemyLayer
-        );
-
-        Vector2 playerPos = _player.transform.position;
-
-        for (int i = 0; i < count; i++)
+        if (_auraObject != null)
         {
-            if (_hitBuffer[i].TryGetComponent<IDamageable>(out var target))
-            {
-                // 플레이어에서 적 방향으로 넉백
-                if (_hitBuffer[i].TryGetComponent<Enemy>(out var enemy))
-                {
-                    Vector2 knockbackDir = ((Vector2)enemy.transform.position - playerPos).normalized;
-                    enemy.TakeDamage(ActualDamage, knockbackDir);
-                }
-                else
-                {
-                    target.TakeDamage(ActualDamage);
-                }
-                SpawnHitEffect(_hitBuffer[i].transform.position);
-            }
+            _auraObject.UpdateStats(CurrentRadius, ActualDamage, TickInterval);
         }
     }
     #endregion
@@ -122,9 +105,9 @@ public class AuraSkill : ActiveSkill
         }
 
         // 스킬이 파괴될 때 오라도 함께 정리
-        if (_auraEffect != null)
+        if (_auraObject != null)
         {
-            Destroy(_auraEffect.gameObject);
+            Destroy(_auraObject.gameObject);
         }
     }
     #endregion
@@ -132,11 +115,7 @@ public class AuraSkill : ActiveSkill
     #region Event Handlers
     private void OnGlobalStatsChanged()
     {
-        // 글로벌 스탯 변경 시 오라 범위 업데이트
-        if (_auraEffect != null)
-        {
-            _auraEffect.UpdateRadius(CurrentRadius);
-        }
+        UpdateAuraStats();
     }
     #endregion
 }

@@ -36,7 +36,7 @@ public class AreaSkill : ActiveSkill
 
         if (Prefab != null && PoolManager != null)
         {
-            _areaPoolKey = $"AreaEffect_{_skillData.skillName}";
+            _areaPoolKey = $"AreaObject_{_skillData.skillName}";
 
             if (!PoolManager.HasPool(_areaPoolKey))
             {
@@ -69,7 +69,7 @@ public class AreaSkill : ActiveSkill
         GameObject areaObj = PoolManager.Get(_areaPoolKey);
         areaObj.transform.position = _player.transform.position;
 
-        if (areaObj.TryGetComponent<AreaEffect>(out var areaEffect))
+        if (areaObj.TryGetComponent<AreaObject>(out var areaEffect))
         {
             areaEffect.Initialize(
                 ActualDamage,

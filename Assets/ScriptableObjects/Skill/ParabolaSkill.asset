@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f838c8c891b7d94fa7b4e20648e133d, type: 3}
-  m_Name: ParabolaShot
+  m_Name: ParabolaSkill
   m_EditorClassIdentifier: 
   _skillName: "\uD3EC\uBB3C\uC120"
   _description: 
@@ -21,20 +21,17 @@ MonoBehaviour:
     type: 3}
   _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
     type: 3}
-  _detectRange: 3
-  _spreadAngle: 3
+  _spreadAngle: 20
   _fireDirection: 1
   _levels:
   - damage: 1
     cooldown: 1
     areaMultiplier: 1
+    detectRange: 10
     projectileSpeed: 10
     projectileLifetime: 5
     projectileCount: 3
     pierceCount: 3
-    gravity: 20
-    horizontalSpeed: 2
-    projectileRotationSpeed: 360
     orbitRadius: 0
     orbitObjectSize: 0
     orbitSpeed: 0

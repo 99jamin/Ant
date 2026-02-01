@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f838c8c891b7d94fa7b4e20648e133d, type: 3}
-  m_Name: StraightShot
+  m_Name: StraightSkill
   m_EditorClassIdentifier: 
   _skillName: "\uC9C1"
   _description: 

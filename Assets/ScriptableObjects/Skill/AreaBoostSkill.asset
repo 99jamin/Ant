@@ -19,20 +19,17 @@ MonoBehaviour:
     type: 3}
   _skillObjectPrefab: {fileID: 0}
   _hitEffectPrefab: {fileID: 0}
-  _detectRange: 0
   _spreadAngle: 0
   _fireDirection: 0
   _levels:
   - damage: 0
     cooldown: 0
     areaMultiplier: 0.5
+    detectRange: 0
     projectileSpeed: 0
     projectileLifetime: 0
     projectileCount: 0
     pierceCount: 0
-    gravity: 0
-    horizontalSpeed: 0
-    projectileRotationSpeed: 0
     orbitRadius: 0
     orbitObjectSize: 0
     orbitSpeed: 0

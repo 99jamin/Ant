@@ -582,7 +582,7 @@ MonoBehaviour:
   allSkills:
   - {fileID: 11400000, guid: c46237c296542cd4b99402a18694641d, type: 2}
   - {fileID: 11400000, guid: d66666a40c6e5fc4caf4f7400ffd26b5, type: 2}
-  startingSkill: {fileID: 11400000, guid: d66666a40c6e5fc4caf4f7400ffd26b5, type: 2}
+  startingSkill: {fileID: 11400000, guid: c46237c296542cd4b99402a18694641d, type: 2}
   choiceCount: 3
 --- !u!114 &912551125
 MonoBehaviour:
@@ -597,7 +597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillManager: {fileID: 912551124}
-  skillToAdd: {fileID: 0}
+  skillToAdd: {fileID: 11400000, guid: c11485db2ea77b945a61c9b0c572a4e7, type: 2}
   addSkill: 0
   targetSkillIndex: 0
   levelUp: 0

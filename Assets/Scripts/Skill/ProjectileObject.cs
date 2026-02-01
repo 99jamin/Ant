@@ -1,12 +1,12 @@
 using UnityEngine;
 
 /// <summary>
-/// 투사체 기본 클래스
+/// 투사체 오브젝트 기본 클래스
 /// 직선, 포물선, 부메랑 등 다양한 투사체의 부모 클래스입니다.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class Projectile : MonoBehaviour, IPoolable
+public class ProjectileObject : MonoBehaviour, IPoolable
 {
     #region Protected Fields
     protected Rigidbody2D _rb;
@@ -141,18 +141,7 @@ public class Projectile : MonoBehaviour, IPoolable
 
     protected virtual void OnHitTarget(Collider2D target)
     {
-        if (target.TryGetComponent<IDamageable>(out var damageable))
-        {
-            // 투사체 이동 방향으로 넉백
-            if (target.TryGetComponent<Enemy>(out var enemy))
-            {
-                enemy.TakeDamage(_damage, _direction);
-            }
-            else
-            {
-                damageable.TakeDamage(_damage);
-            }
-        }
+        DamageHelper.DealDamageWithKnockback(target, _damage, _direction);
 
         // 히트 이펙트 스폰
         SpawnHitEffect(target.transform.position);

@@ -56,12 +56,18 @@ public class OrbitSkill : ActiveSkill
     /// 현재 오브젝트 개수 (LevelData에서 가져옴)
     /// </summary>
     private int CurrentObjectCount => CurrentLevelData?.orbitObjectCount ?? 1;
+
+    /// <summary>
+    /// 틱 간격 (LevelData에서 가져옴)
+    /// </summary>
+    private float TickInterval => CurrentLevelData?.tickInterval ?? 0.5f;
     #endregion
 
     #region Overrides
     protected override void OnInitialize()
     {
         base.OnInitialize();
+        
         SpawnOrbitObjects(CurrentObjectCount);
 
         // 글로벌 스탯 변경 이벤트 구독
@@ -111,16 +117,6 @@ public class OrbitSkill : ActiveSkill
     }
     #endregion
 
-    #region Public Methods
-    /// <summary>
-    /// 히트 이펙트 스폰 (OrbitObject에서 호출)
-    /// </summary>
-    public void SpawnHitEffectAt(Vector3 position)
-    {
-        SpawnHitEffect(position);
-    }
-    #endregion
-
     #region Private Methods
     private void SpawnOrbitObjects(int count)
     {
@@ -144,7 +140,7 @@ public class OrbitSkill : ActiveSkill
         OrbitObject orbitObject = obj.GetComponent<OrbitObject>();
         if (orbitObject != null)
         {
-            orbitObject.Initialize(this, index, totalCount);
+            orbitObject.Initialize(this, index, totalCount, Managers.Instance.Pool, _hitEffectPoolKey, TickInterval);
             _orbitObjects.Add(orbitObject);
         }
         else

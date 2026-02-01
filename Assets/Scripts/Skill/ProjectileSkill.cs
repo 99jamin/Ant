@@ -113,17 +113,7 @@ public class ProjectileSkill : ActiveSkill
 
         projObj.transform.position = _player.transform.position;
 
-        // 포물선 투사체인 경우 설정 주입
-        if (projObj.TryGetComponent<ParabolaProjectile>(out var parabola))
-        {
-            parabola.InitializeParabolaSettings(
-                CurrentLevelData?.gravity ?? 20f,
-                CurrentLevelData?.horizontalSpeed ?? 2f,
-                CurrentLevelData?.projectileRotationSpeed ?? 360f
-            );
-        }
-
-        if (projObj.TryGetComponent<Projectile>(out var projectile))
+        if (projObj.TryGetComponent<ProjectileObject>(out var projectile))
         {
             projectile.Initialize(
                 ActualDamage,

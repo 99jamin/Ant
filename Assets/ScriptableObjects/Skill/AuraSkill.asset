@@ -21,24 +21,21 @@ MonoBehaviour:
     type: 3}
   _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
     type: 3}
-  _detectRange: 0
   _spreadAngle: 0
   _fireDirection: 0
   _levels:
   - damage: 1
     cooldown: 1
     areaMultiplier: 2
+    detectRange: 0
     projectileSpeed: 0
     projectileLifetime: 0
     projectileCount: 0
     pierceCount: 0
-    gravity: 0
-    horizontalSpeed: 0
-    projectileRotationSpeed: 0
     orbitRadius: 0
     orbitObjectSize: 0
     orbitSpeed: 0
     orbitObjectCount: 0
     tickInterval: 0.5
-    areaLifetime: 3
+    areaLifetime: 0
     levelDescription: 

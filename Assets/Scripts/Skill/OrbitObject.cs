@@ -9,22 +9,18 @@ public class OrbitObject : MonoBehaviour
 {
     #region Private Fields
     private OrbitSkill _parentSkill;
-    private SpriteRenderer _spriteRenderer;
+    private PoolManager _poolManager;
+    private string _hitEffectPoolKey;
     private int _index;
     private float _currentAngle;
 
     // 충돌 쿨타임 관리 (적별로 만료 시간 저장)
     private readonly Dictionary<Collider2D, float> _hitExpirationTimes = new Dictionary<Collider2D, float>();
     private readonly List<Collider2D> _expiredColliders = new List<Collider2D>(); // GC 방지용 재사용 버퍼
-    private const float HitCooldown = 0.5f;
+    private float _hitCooldown = 0.5f;
     #endregion
 
     #region Unity Lifecycle
-    private void Awake()
-    {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
     private void Update()
     {
         UpdateRotation();
@@ -49,9 +45,13 @@ public class OrbitObject : MonoBehaviour
     /// <param name="parentSkill">부모 스킬</param>
     /// <param name="index">오브젝트 인덱스 (배치 각도 계산용)</param>
     /// <param name="totalCount">전체 오브젝트 수</param>
-    public void Initialize(OrbitSkill parentSkill, int index, int totalCount)
+    public void Initialize(OrbitSkill parentSkill, int index, int totalCount,
+        PoolManager poolManager, string hitEffectPoolKey, float tickInterval)
     {
         _parentSkill = parentSkill;
+        _poolManager = poolManager;
+        _hitEffectPoolKey = hitEffectPoolKey;
+        _hitCooldown = tickInterval;
         _index = index;
 
         // 초기 각도 설정 (등간격 배치)
@@ -116,7 +116,8 @@ public class OrbitObject : MonoBehaviour
     private void ApplyScale()
     {
         if (_parentSkill == null) return;
-        SpriteScaleHelper.ApplySizeScale(transform, _spriteRenderer, _parentSkill.ObjectSize);
+        float size = _parentSkill.ObjectSize;
+        transform.localScale = new Vector3(size, size, 1f);
     }
 
     private void TryDealDamage(Collider2D other)
@@ -132,23 +133,12 @@ public class OrbitObject : MonoBehaviour
             return;
 
         // 데미지 적용
-        if (other.TryGetComponent<IDamageable>(out var target))
-        {
-            // 회전 오브젝트에서 적 방향으로 넉백
-            if (other.TryGetComponent<Enemy>(out var enemy))
-            {
-                Vector2 knockbackDir = ((Vector2)enemy.transform.position - (Vector2)transform.position).normalized;
-                enemy.TakeDamage(_parentSkill.Damage, knockbackDir);
-            }
-            else
-            {
-                target.TakeDamage(_parentSkill.Damage);
-            }
-            _parentSkill.SpawnHitEffectAt(other.transform.position);
+        Vector2 knockbackDir = ((Vector2)other.transform.position - (Vector2)transform.position).normalized;
+        DamageHelper.DealDamageWithKnockback(other, _parentSkill.Damage, knockbackDir);
+        PoolableHelper.SpawnHitEffect(_poolManager, _hitEffectPoolKey, other.transform.position);
 
-            // 만료 시간 설정 (현재 시간 + 쿨타임)
-            _hitExpirationTimes[other] = currentTime + HitCooldown;
-        }
+        // 만료 시간 설정 (현재 시간 + 쿨타임)
+        _hitExpirationTimes[other] = currentTime + _hitCooldown;
     }
 
     private void UpdateHitCooldowns()

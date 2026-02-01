@@ -416,7 +416,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
 
     private void ReturnToPool()
     {
-        Managers.Instance.Pool.Return(PoolKey, gameObject);
+        PoolableHelper.ReturnToPool(Managers.Instance.Pool, PoolKey, gameObject);
     }
     #endregion
 }
