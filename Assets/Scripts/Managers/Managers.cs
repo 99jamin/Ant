@@ -8,11 +8,14 @@ public class Managers : MonoBehaviour
 {
     #region Singleton
     private static Managers _instance;
+    private static bool _isQuitting;
 
     public static Managers Instance
     {
         get
         {
+            if (_isQuitting) return null;
+
             if (_instance == null)
             {
                 InitializeInstance();
@@ -52,11 +55,17 @@ public class Managers : MonoBehaviour
 
     #region Sub Managers
     private PoolManager _pool;
+    private UIManager _ui;
 
     /// <summary>
     /// 오브젝트 풀링을 관리하는 매니저
     /// </summary>
     public PoolManager Pool => _pool;
+
+    /// <summary>
+    /// UI 시스템을 관리하는 매니저
+    /// </summary>
+    public UIManager UI => _ui;
     #endregion
 
     #region Unity Lifecycle
@@ -74,12 +83,18 @@ public class Managers : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void OnApplicationQuit()
+    {
+        _isQuitting = true;
+    }
     #endregion
 
     #region Initialization
     private void InitializeManagers()
     {
         _pool = GetOrCreateManager<PoolManager>("PoolManager");
+        _ui = GetOrCreateManager<UIManager>("UIManager");
 
         Debug.Log("[Managers] All managers initialized.");
     }

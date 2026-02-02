@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ParabolaSkill
   m_EditorClassIdentifier: 
   _skillName: "\uD3EC\uBB3C\uC120"
-  _description: 
-  _icon: {fileID: 0}
+  _description: "\uB364\uBCA8\uB358\uC9C0\uAE30"
+  _icon: {fileID: 21300000, guid: ddf2fa1708c26104298729ea2ad39388, type: 3}
   _skillPrefab: {fileID: 3294117024582719242, guid: 7273c415aded3134d9a1b383fd38717c,
     type: 3}
   _skillObjectPrefab: {fileID: 2895795182145411560, guid: 4b32ed3f79f6a844cb8bac5b0ee2c9a3,
@@ -30,7 +30,7 @@ MonoBehaviour:
     detectRange: 10
     projectileSpeed: 10
     projectileLifetime: 5
-    projectileCount: 3
+    projectileCount: 2
     pierceCount: 3
     orbitRadius: 0
     orbitObjectSize: 0
@@ -38,4 +38,34 @@ MonoBehaviour:
     orbitObjectCount: 0
     tickInterval: 0
     areaLifetime: 0
-    levelDescription: 
+    levelDescription: "\uB364\uBCA82\uAC1C"
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 4
+    pierceCount: 3
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: "\uB364\uBCA84\uAC1C"
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 6
+    pierceCount: 3
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: "\uB364\uBCA86"

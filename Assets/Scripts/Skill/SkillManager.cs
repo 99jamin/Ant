@@ -242,13 +242,13 @@ public class SkillManager : MonoBehaviour
 
     /// <summary>
     /// 레벨업 시 랜덤 스킬 선택지 제공
-    /// - 미보유 스킬: 새로 획득
-    /// - 보유 스킬 (최대 레벨 아닌 경우): 레벨업 가능
+    /// - 미보유 스킬: 새로 획득 (nextLevel = 1)
+    /// - 보유 스킬 (최대 레벨 아닌 경우): 레벨업 가능 (nextLevel = currentLevel + 1)
     /// </summary>
-    /// <returns>선택 가능한 스킬 데이터 목록</returns>
-    public List<SkillDataSO> GetRandomSkillChoices()
+    /// <returns>선택 가능한 스킬 데이터와 다음 레벨 정보</returns>
+    public List<(SkillDataSO skillData, int nextLevel)> GetRandomSkillChoices()
     {
-        List<SkillDataSO> availableSkills = new();
+        List<(SkillDataSO skillData, int nextLevel)> availableSkills = new();
 
         foreach (var skillData in allSkills)
         {
@@ -258,7 +258,7 @@ public class SkillManager : MonoBehaviour
                 var skill = GetSkill(skillData.skillName);
                 if (!skill.IsMaxLevel)
                 {
-                    availableSkills.Add(skillData);
+                    availableSkills.Add((skillData, skill.CurrentLevel + 1));
                 }
             }
             else
@@ -266,7 +266,7 @@ public class SkillManager : MonoBehaviour
                 // 미보유 스킬: 슬롯이 남아있으면 선택지에 포함
                 if (CanAddSkill)
                 {
-                    availableSkills.Add(skillData);
+                    availableSkills.Add((skillData, 1));
                 }
             }
         }

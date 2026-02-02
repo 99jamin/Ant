@@ -1,0 +1,42 @@
+# === Unity 임시 및 생성 파일 (필수 제외) ===
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Logs]/
+[MemoryCaptures]/
+UserSettings/
+
+# === 에셋 메타데이터 (가장 많은 토큰을 잡아먹음) ===
+# 코드 로직 수정 시에는 .meta 파일이 전혀 필요 없습니다.
+*.meta
+
+# === IDE 및 빌드 관련 ===
+.vs/
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.user
+*.userprefs
+
+# === 그래픽 및 바이너리 에셋 (클로드가 읽을 수 없음) ===
+# 스크립트 위주로만 보게 하여 효율을 높입니다.
+*.unity
+*.asset
+*.prefab
+*.mat
+*.fbx
+*.obj
+*.png
+*.jpg
+*.tga
+*.wav
+*.mp3
+*.ttf
+
+# === 패키지 및 빌드 결과물 ===
+ExportedObj/
+.plastic/
+*.unitypackage

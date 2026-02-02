@@ -12,33 +12,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f838c8c891b7d94fa7b4e20648e133d, type: 3}
   m_Name: StraightSkill
   m_EditorClassIdentifier: 
-  _skillName: "\uC9C1"
-  _description: 
-  _icon: {fileID: 0}
+  _skillName: "\uC9C1\uC120 \uBC1C\uC0AC"
+  _description: "\uC9C1\uC120\uC2A4\uD0AC \uBC1C\uC0AC"
+  _icon: {fileID: 21300000, guid: 7ad1247a55501cf44b5a712ec2a95ab3, type: 3}
   _skillPrefab: {fileID: 4002080412669505932, guid: 9931ee7e95b8fac4ba3106eec5e613f6,
     type: 3}
   _skillObjectPrefab: {fileID: 7551808572235360768, guid: 6e6dbcc64986ee54d9720518d15f2b54,
     type: 3}
   _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
     type: 3}
-  _detectRange: 3
   _spreadAngle: 3
   _fireDirection: 0
   _levels:
   - damage: 3
     cooldown: 1
     areaMultiplier: 1
+    detectRange: 10
     projectileSpeed: 10
     projectileLifetime: 5
     projectileCount: 3
     pierceCount: 3
-    gravity: 0
-    horizontalSpeed: 0
-    projectileRotationSpeed: 0
     orbitRadius: 0
     orbitObjectSize: 0
     orbitSpeed: 0
     orbitObjectCount: 0
     tickInterval: 0
     areaLifetime: 0
-    levelDescription: 
+    levelDescription: "\uD22C\uC0AC\uCCB4 3\uAC1C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
+  - damage: 3
+    cooldown: 1
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 3
+    pierceCount: 3
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: "\uD22C\uC0AC\uCCB4 3\uAC1C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
+  - damage: 3
+    cooldown: 1
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 4
+    pierceCount: 3
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: "\uD22C\uC0AC\uCCB4 4\uAC1C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
+  - damage: 3
+    cooldown: 1
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 5
+    pierceCount: 3
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0
+    areaLifetime: 0
+    levelDescription: "\uD22C\uC0AC\uCCB4 5\uAC1C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
