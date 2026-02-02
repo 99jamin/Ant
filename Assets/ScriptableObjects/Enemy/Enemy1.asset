@@ -18,4 +18,4 @@ MonoBehaviour:
   health: 10
   speed: 1
   damage: 10
-  scorePoints: 10
+  expAmount: 30

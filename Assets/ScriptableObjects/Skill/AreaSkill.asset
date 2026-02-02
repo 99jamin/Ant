@@ -13,32 +13,59 @@ MonoBehaviour:
   m_Name: AreaSkill
   m_EditorClassIdentifier: 
   _skillName: "\uC7A5\uD310 \uC18C\uD658"
-  _description: 
-  _icon: {fileID: 0}
+  _description: "\uC0AC\uACFC\uC999"
+  _icon: {fileID: 21300000, guid: 82714bfd6fd14144985985bcc5edf998, type: 3}
   _skillPrefab: {fileID: 708765758747071764, guid: b54cb15dfcec9f04ab758162c39a30b9,
     type: 3}
   _skillObjectPrefab: {fileID: 6964892461245685166, guid: a9dbe7a2a47f4c3479980bd9dd61d522,
     type: 3}
   _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
     type: 3}
-  _detectRange: 0
   _spreadAngle: 0
   _fireDirection: 0
   _levels:
   - damage: 1
     cooldown: 3
     areaMultiplier: 1
+    detectRange: 10
     projectileSpeed: 0
     projectileLifetime: 0
     projectileCount: 0
     pierceCount: 0
-    gravity: 0
-    horizontalSpeed: 0
-    projectileRotationSpeed: 0
     orbitRadius: 0
     orbitObjectSize: 0
     orbitSpeed: 0
     orbitObjectCount: 0
     tickInterval: 0.5
     areaLifetime: 5
-    levelDescription: 
+    levelDescription: "\uCFE8\uD0C0\uC7843"
+  - damage: 1
+    cooldown: 2
+    areaMultiplier: 1
+    detectRange: 10
+    projectileSpeed: 0
+    projectileLifetime: 0
+    projectileCount: 0
+    pierceCount: 0
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0.5
+    areaLifetime: 5
+    levelDescription: "\uCFF9\uD0C0\uC7842"
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 1.5
+    detectRange: 10
+    projectileSpeed: 0
+    projectileLifetime: 0
+    projectileCount: 0
+    pierceCount: 0
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0.5
+    areaLifetime: 5
+    levelDescription: "\uCFF9\uD0C0\uC7841"

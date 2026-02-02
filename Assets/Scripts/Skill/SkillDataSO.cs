@@ -22,7 +22,6 @@ public class SkillDataSO : ScriptableObject
     #region Basic Info
     [Header("기본 정보")]
     [SerializeField] private string _skillName;
-    [SerializeField] [TextArea] private string _description;
     [SerializeField] private Sprite _icon;
     #endregion
 
@@ -54,7 +53,6 @@ public class SkillDataSO : ScriptableObject
 
     #region Properties
     public string skillName => _skillName;
-    public string description => _description;
     public Sprite icon => _icon;
     public GameObject skillPrefab => _skillPrefab;
     public GameObject skillObjectPrefab => _skillObjectPrefab;

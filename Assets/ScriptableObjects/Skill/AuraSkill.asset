@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AuraSkill
   m_EditorClassIdentifier: 
   _skillName: "\uC624\uB77C"
-  _description: 
-  _icon: {fileID: 0}
+  _description: "\uC544\uC6B0\uB77C"
+  _icon: {fileID: 21300000, guid: eaa311cc3119e424fbb01032b859b911, type: 3}
   _skillPrefab: {fileID: 5078236354452593079, guid: abafda7b29bbe5247a08e7d2bd8549bb,
     type: 3}
   _skillObjectPrefab: {fileID: 3325771446661751037, guid: dbff4a5b8780b12448bce6d524176c9c,
@@ -38,4 +38,34 @@ MonoBehaviour:
     orbitObjectCount: 0
     tickInterval: 0.5
     areaLifetime: 0
-    levelDescription: 
+    levelDescription: "\uD06C\uAE302"
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 2.5
+    detectRange: 0
+    projectileSpeed: 0
+    projectileLifetime: 0
+    projectileCount: 0
+    pierceCount: 0
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0.5
+    areaLifetime: 0
+    levelDescription: "\uD06C\uAE302.5"
+  - damage: 1
+    cooldown: 1
+    areaMultiplier: 3
+    detectRange: 0
+    projectileSpeed: 0
+    projectileLifetime: 0
+    projectileCount: 0
+    pierceCount: 0
+    orbitRadius: 0
+    orbitObjectSize: 0
+    orbitSpeed: 0
+    orbitObjectCount: 0
+    tickInterval: 0.5
+    areaLifetime: 0
+    levelDescription: "\uD06C\uAE303"

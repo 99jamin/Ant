@@ -13,49 +13,59 @@ MonoBehaviour:
   m_Name: OrbitSkill
   m_EditorClassIdentifier: 
   _skillName: "\uD68C\uC804"
-  _description: 
-  _icon: {fileID: 0}
+  _description: "\uBD84\uC2E0\uC744 \uD68C\uC804\uC2DC\uD0B5\uB2C8\uB2E4"
+  _icon: {fileID: 21300000, guid: 6f51eeabf8db99541af7c261eb025bae, type: 3}
   _skillPrefab: {fileID: 955016926269389681, guid: a1497b9cf4f026f43bcb11411204b479,
     type: 3}
   _skillObjectPrefab: {fileID: 8340116919366003369, guid: eae7f0f2b465aab4c8f17a590b87dede,
     type: 3}
   _hitEffectPrefab: {fileID: 846676392271886564, guid: bb40c520642862248a9beb9983c8804e,
     type: 3}
-  _detectRange: 0
   _spreadAngle: 0
   _fireDirection: 0
   _levels:
   - damage: 3
-    cooldown: 0
-    areaMultiplier: 1
-    projectileSpeed: 0
-    projectileLifetime: 0
-    projectileCount: 0
-    pierceCount: 0
-    gravity: 0
-    horizontalSpeed: 0
-    projectileRotationSpeed: 0
-    orbitRadius: 1.5
-    orbitObjectSize: 1
-    orbitSpeed: 90
-    orbitObjectCount: 5
-    tickInterval: 0
-    areaLifetime: 0
-    levelDescription: 
-  - damage: 1
     cooldown: 1
     areaMultiplier: 2
+    detectRange: 10
     projectileSpeed: 10
     projectileLifetime: 5
     projectileCount: 10
     pierceCount: 0
-    gravity: 20
-    horizontalSpeed: 2
-    projectileRotationSpeed: 360
     orbitRadius: 1.5
     orbitObjectSize: 0.5
     orbitSpeed: 90
-    orbitObjectCount: 1
+    orbitObjectCount: 3
     tickInterval: 0.5
     areaLifetime: 3
-    levelDescription: 
+    levelDescription: "3\uAC1C \uD68C\uC804"
+  - damage: 3
+    cooldown: 1
+    areaMultiplier: 2
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 10
+    pierceCount: 0
+    orbitRadius: 1.5
+    orbitObjectSize: 0.5
+    orbitSpeed: 90
+    orbitObjectCount: 4
+    tickInterval: 0.5
+    areaLifetime: 3
+    levelDescription: "4\uAC1C \uD68C\uC804"
+  - damage: 3
+    cooldown: 1
+    areaMultiplier: 2
+    detectRange: 10
+    projectileSpeed: 10
+    projectileLifetime: 5
+    projectileCount: 10
+    pierceCount: 0
+    orbitRadius: 1.5
+    orbitObjectSize: 0.5
+    orbitSpeed: 90
+    orbitObjectCount: 5
+    tickInterval: 0.5
+    areaLifetime: 3
+    levelDescription: 5
