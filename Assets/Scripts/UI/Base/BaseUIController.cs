@@ -8,12 +8,16 @@ public abstract class BaseUIController : MonoBehaviour
 {
     protected virtual void OnEnable()
     {
-        Managers.Instance.UI.RegisterController(this);
+        // Managers 또는 UIManager가 아직 초기화되지 않았을 수 있음
+        if (Managers.Instance != null && Managers.Instance.UI != null)
+        {
+            Managers.Instance.UI.RegisterController(this);
+        }
     }
 
     protected virtual void OnDisable()
     {
-        if (Managers.Instance != null)
+        if (Managers.Instance != null && Managers.Instance.UI != null)
         {
             Managers.Instance.UI.UnregisterController(this);
         }

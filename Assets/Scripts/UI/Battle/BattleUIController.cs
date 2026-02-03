@@ -16,6 +16,7 @@ public class BattleUIController : BaseUIController
     [Header("팝업")]
     [SerializeField] private LevelUpUI levelUpUI;
     [SerializeField] private MenuUI menuUI;
+    [SerializeField] private ResultUI resultUI;
 
     [Header("참조")]
     [SerializeField] private SkillManager skillManager;
@@ -84,6 +85,7 @@ public class BattleUIController : BaseUIController
         // 팝업 초기 상태: 닫힘
         levelUpUI.Close();
         menuUI.Close();
+        resultUI.Close();
 
         // 레벨업 UI 스킬 선택 콜백 등록
         levelUpUI.OnSkillSelected += HandleSkillSelected;
@@ -130,8 +132,22 @@ public class BattleUIController : BaseUIController
 
     private void HandleDeath()
     {
-        // 사망 처리 (추후 사망 UI 팝업 추가 가능)
-        ClosePopup();
+        // 현재 팝업 닫기 (Resume 없이)
+        if (_currentPopup != null)
+        {
+            _currentPopup.Close();
+            _currentPopup = null;
+        }
+
+        // 생존 시간 및 점수 계산
+        float survivalTime = timerUI.ElapsedTime;
+        int score = Mathf.FloorToInt(survivalTime);
+
+        // GameManager에 전투 종료 알림
+        Managers.Instance.Game.EndBattle(survivalTime);
+
+        // 결과 UI 표시
+        resultUI.Show(survivalTime, score);
     }
 
     private void HandleSkillSelected(SkillDataSO skillData)
@@ -154,7 +170,7 @@ public class BattleUIController : BaseUIController
 
         _currentPopup = popup;
         _currentPopup.Open();
-        Time.timeScale = 0f;
+        Managers.Instance.Game.PauseBattle();
     }
 
     /// <summary>
@@ -168,7 +184,7 @@ public class BattleUIController : BaseUIController
             _currentPopup = null;
         }
 
-        Time.timeScale = 1f;
+        Managers.Instance.Game.ResumeBattle();
     }
 
     /// <summary>

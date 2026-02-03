@@ -25,9 +25,9 @@ public class ProjectileObject : MonoBehaviour, IPoolable
 
     #region Properties
     /// <summary>
-    /// 적 레이어 (Managers에서 가져옴)
+    /// 적 레이어 (GameManager에서 가져옴)
     /// </summary>
-    protected LayerMask TargetLayer => Managers.Instance.EnemyLayer;
+    protected LayerMask TargetLayer => Managers.Instance.Game.EnemyLayer;
     #endregion
 
     #region IPoolable Implementation

@@ -22,9 +22,9 @@ public abstract class ActiveSkill : BaseSkill
     protected float DetectRange => CurrentLevelData?.detectRange ?? 10f;
 
     /// <summary>
-    /// 적 레이어 (Managers에서 가져옴)
+    /// 적 레이어 (GameManager에서 가져옴)
     /// </summary>
-    protected LayerMask EnemyLayer => Managers.Instance.EnemyLayer;
+    protected LayerMask EnemyLayer => Managers.Instance.Game.EnemyLayer;
 
     /// <summary>
     /// 글로벌 배율이 적용된 실제 쿨타임
