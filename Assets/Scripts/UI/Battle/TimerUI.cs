@@ -32,4 +32,9 @@ public class TimerUI : BaseUI
         _elapsedTime = 0f;
         _lastDisplayedSeconds = -1;
     }
+
+    /// <summary>
+    /// 현재 경과 시간(초)을 반환합니다.
+    /// </summary>
+    public float ElapsedTime => _elapsedTime;
 }

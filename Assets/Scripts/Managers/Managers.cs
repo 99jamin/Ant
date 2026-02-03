@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +10,7 @@ public class Managers : MonoBehaviour
     #region Singleton
     private static Managers _instance;
     private static bool _isQuitting;
+    private bool _isInitialized;
 
     public static Managers Instance
     {
@@ -34,28 +36,19 @@ public class Managers : MonoBehaviour
             _instance = go.AddComponent<Managers>();
             Debug.Log("[Managers] Auto-created Managers instance.");
         }
+        else if (!_instance._isInitialized)
+        {
+            // 씬에 배치된 Managers를 찾았지만 아직 Awake가 호출되지 않은 경우
+            DontDestroyOnLoad(_instance.gameObject);
+            _instance.InitializeManagers();
+        }
     }
-    #endregion
-
-    #region Game Settings
-    [Header("레이어 설정")]
-    [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private LayerMask experienceLayer;
-
-    /// <summary>
-    /// 적 레이어 마스크
-    /// </summary>
-    public LayerMask EnemyLayer => enemyLayer;
-
-    /// <summary>
-    /// 경험치 오브젝트 레이어 마스크
-    /// </summary>
-    public LayerMask ExperienceLayer => experienceLayer;
     #endregion
 
     #region Sub Managers
     private PoolManager _pool;
     private UIManager _ui;
+    private GameManager _game;
 
     /// <summary>
     /// 오브젝트 풀링을 관리하는 매니저
@@ -66,6 +59,11 @@ public class Managers : MonoBehaviour
     /// UI 시스템을 관리하는 매니저
     /// </summary>
     public UIManager UI => _ui;
+
+    /// <summary>
+    /// 게임 상태 및 씬 전환을 관리하는 매니저
+    /// </summary>
+    public GameManager Game => _game;
     #endregion
 
     #region Unity Lifecycle
@@ -77,13 +75,20 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             InitializeManagers();
         }
+        else if (_instance == this && !_isInitialized)
+        {
+            // InitializeInstance에서 이미 처리된 경우 스킵
+            DontDestroyOnLoad(gameObject);
+            InitializeManagers();
+        }
         else if (_instance != this)
         {
             Debug.LogWarning("[Managers] Duplicate instance detected. Destroying...");
             Destroy(gameObject);
         }
     }
-
+    
+    
     private void OnApplicationQuit()
     {
         _isQuitting = true;
@@ -93,8 +98,12 @@ public class Managers : MonoBehaviour
     #region Initialization
     private void InitializeManagers()
     {
+        if (_isInitialized) return;
+        _isInitialized = true;
+
         _pool = GetOrCreateManager<PoolManager>("PoolManager");
         _ui = GetOrCreateManager<UIManager>("UIManager");
+        _game = GetOrCreateManager<GameManager>("GameManager");
 
         Debug.Log("[Managers] All managers initialized.");
     }
