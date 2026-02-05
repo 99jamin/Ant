@@ -166,12 +166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e3f1213f8ae64d49b790562d634f349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTypes:
-  - {fileID: 11400000, guid: d14a21db7f1857d44a8e8976e25d78e5, type: 2}
   enemyPrefab: {fileID: 8954151001125139887, guid: 14b73ed488e5f4f4dbeb76666f7487e4,
     type: 3}
+  bossPrefab: {fileID: 1826515503174827227, guid: 086915d3af9f7f846a63a7dbcfd3d7d0,
+    type: 3}
   poolInitialSize: 20
-  spawnInterval: 0.5
+  bossPoolInitialSize: 2
   minSpawnRadius: 15
   maxSpawnRadius: 25
   relocateDistance: 90
@@ -2923,6 +2923,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1875946904}
+  - component: {fileID: 1875946905}
   m_Layer: 0
   m_Name: BattleManager
   m_TagString: Untagged
@@ -2950,6 +2951,20 @@ Transform:
   - {fileID: 1922172245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1875946905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875946903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7b1581d1a1cb64390beb28055dbbbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveData: {fileID: 11400000, guid: 4bb7750439362914fafc1fe750225f1f, type: 2}
+  enemySpawner: {fileID: 9372620}
 --- !u!1 &1922172241
 GameObject:
   m_ObjectHideFlags: 0
@@ -3401,7 +3416,7 @@ PrefabInstance:
     - target: {fileID: 8100978938586405892, guid: 08b85044ef0fd1f48acccebb4528d293,
         type: 3}
       propertyPath: baseMoveSpeed
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8280246725837687548, guid: 08b85044ef0fd1f48acccebb4528d293,
         type: 3}

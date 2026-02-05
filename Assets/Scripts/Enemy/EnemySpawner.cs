@@ -12,6 +12,7 @@ public class EnemySpawner : MonoBehaviour
 {
     #region Constants
     public const string POOL_KEY = "Enemy";
+    public const string BOSS_POOL_KEY = "Boss";
     #endregion
 
     #region Events
@@ -20,15 +21,13 @@ public class EnemySpawner : MonoBehaviour
     #endregion
 
     #region Serialized Fields
-    [Header("스폰 설정")]
-    [SerializeField] private EnemyDataSO[] enemyTypes;
+    [Header("프리팹 설정")]
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject bossPrefab;
 
     [Header("풀링 설정")]
     [SerializeField] private int poolInitialSize = 20;
-
-    [Header("스폰 타이밍")]
-    [SerializeField] private float spawnInterval = 1.0f;
+    [SerializeField] private int bossPoolInitialSize = 2;
 
     [Header("스폰 영역 (도넛 형태)")]
     [Tooltip("플레이어로부터의 최소 스폰 거리")]
@@ -62,6 +61,11 @@ public class EnemySpawner : MonoBehaviour
     // 플레이어 이동 방향 계산용
     private Vector3 _lastPlayerPosition;
     private Vector3 _playerMoveDirection;
+
+    // 웨이브 데이터 (BattleManager에서 주입)
+    private EnemyDataSO[] _enemyTypes;
+    private float _spawnInterval = 1f;
+    private int _spawnCount = 1;
     #endregion
 
     #region Unity Lifecycle
@@ -99,12 +103,6 @@ public class EnemySpawner : MonoBehaviour
 
     private bool ValidateConfiguration()
     {
-        if (enemyTypes == null || enemyTypes.Length == 0)
-        {
-            Debug.LogError("[EnemySpawner] enemyTypes is not configured.", this);
-            return false;
-        }
-
         if (enemyPrefab == null)
         {
             Debug.LogError("[EnemySpawner] enemyPrefab is not assigned.", this);
@@ -123,6 +121,11 @@ public class EnemySpawner : MonoBehaviour
     private void InitializePool()
     {
         Managers.Instance.Pool.CreatePool(POOL_KEY, enemyPrefab, poolInitialSize);
+
+        if (bossPrefab != null)
+        {
+            Managers.Instance.Pool.CreatePool(BOSS_POOL_KEY, bossPrefab, bossPoolInitialSize);
+        }
     }
 
     private void FindPlayer()
@@ -157,9 +160,12 @@ public class EnemySpawner : MonoBehaviour
     #region Spawn Logic
     private void UpdateSpawnTimer()
     {
+        // 웨이브 데이터가 없으면 스폰하지 않음
+        if (_enemyTypes == null || _enemyTypes.Length == 0) return;
+
         _spawnTimer += Time.deltaTime;
 
-        if (_spawnTimer >= spawnInterval)
+        if (_spawnTimer >= _spawnInterval)
         {
             TrySpawnEnemy();
             _spawnTimer = 0f;
@@ -168,11 +174,14 @@ public class EnemySpawner : MonoBehaviour
 
     private void TrySpawnEnemy()
     {
-        Vector3 spawnPosition = CalculateRandomSpawnPosition();
+        for (int i = 0; i < _spawnCount; i++)
+        {
+            Vector3 spawnPosition = CalculateRandomSpawnPosition();
 
-        if (IsPositionBlocked(spawnPosition)) return;
+            if (IsPositionBlocked(spawnPosition)) continue;
 
-        SpawnEnemyAt(spawnPosition);
+            SpawnEnemyAt(spawnPosition);
+        }
     }
 
     private void SpawnEnemyAt(Vector3 position)
@@ -192,13 +201,71 @@ public class EnemySpawner : MonoBehaviour
 
     private EnemyDataSO GetRandomEnemyData()
     {
-        int randomIndex = Random.Range(0, enemyTypes.Length);
-        return enemyTypes[randomIndex];
+        int randomIndex = Random.Range(0, _enemyTypes.Length);
+        return _enemyTypes[randomIndex];
+    }
+    #endregion
+
+    #region Wave System
+    /// <summary>
+    /// 웨이브 데이터를 적용합니다. BattleManager에서 호출됩니다.
+    /// </summary>
+    public void SetWaveData(WaveEntry waveEntry)
+    {
+        if (waveEntry == null) return;
+
+        _enemyTypes = waveEntry.EnemyTypes;
+        _spawnInterval = waveEntry.SpawnInterval;
+        _spawnCount = waveEntry.SpawnCount;
+
+        // 웨이브 전환 시 스폰 타이머 리셋
+        _spawnTimer = 0f;
+
+        Debug.Log($"[EnemySpawner] 웨이브 적용 - 적 종류: {_enemyTypes.Length}, 스폰 간격: {_spawnInterval}초, 스폰 수: {_spawnCount}");
+    }
+
+    /// <summary>
+    /// 보스를 스폰합니다. BattleManager에서 호출됩니다.
+    /// </summary>
+    public void SpawnBoss(BossDataSO bossData)
+    {
+        if (bossData == null)
+        {
+            Debug.LogWarning("[EnemySpawner] SpawnBoss 실패: BossData가 null입니다.");
+            return;
+        }
+
+        if (!Managers.Instance.Pool.HasPool(BOSS_POOL_KEY))
+        {
+            Debug.LogWarning("[EnemySpawner] SpawnBoss 실패: 보스 풀이 초기화되지 않았습니다.");
+            return;
+        }
+
+        Vector3 spawnPosition = CalculateRandomSpawnPosition();
+
+        GameObject bossObj = Managers.Instance.Pool.Get(BOSS_POOL_KEY);
+        bossObj.transform.position = spawnPosition;
+
+        // Boss 컴포넌트로 초기화
+        if (bossObj.TryGetComponent<Boss>(out var boss))
+        {
+            boss.Init(bossData, BOSS_POOL_KEY);
+            boss.SetSpawnerReference(this);
+            RegisterEnemy(boss);
+            OnEnemySpawned?.Invoke(boss);
+        }
+        else
+        {
+            Debug.LogError("[EnemySpawner] 보스 프리팹에 Boss 컴포넌트가 없습니다.");
+        }
     }
     #endregion
 
     #region Enemy Tracking
-    private void RegisterEnemy(Enemy enemy)
+    /// <summary>
+    /// 적을 활성 목록에 등록합니다. (외부 소환 시에도 호출 가능)
+    /// </summary>
+    public void RegisterEnemy(Enemy enemy)
     {
         _activeEnemies.Add(enemy);
         enemy.OnDeath += HandleEnemyDeath;
