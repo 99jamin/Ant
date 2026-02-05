@@ -10,6 +10,9 @@ public class LobbyUIController : BaseUIController
     [Header("버튼")]
     [SerializeField] private Button _battleStartButton;
 
+    [Header("캐릭터 선택")]
+    [SerializeField] private CharacterSelectUI _characterSelectUI;
+
     #region Unity Lifecycle
     private void Awake()
     {
@@ -19,12 +22,51 @@ public class LobbyUIController : BaseUIController
         }
     }
 
+    private void Start()
+    {
+        InitializeCharacterSelect();
+    }
+
     private void OnDestroy()
     {
         if (_battleStartButton != null)
         {
             _battleStartButton.onClick.RemoveListener(OnBattleStartButtonClicked);
         }
+
+        if (_characterSelectUI != null)
+        {
+            _characterSelectUI.OnCharacterSelected -= OnCharacterSelected;
+        }
+    }
+    #endregion
+
+    #region Character Selection
+    private void InitializeCharacterSelect()
+    {
+        if (_characterSelectUI == null) return;
+
+        GameManager gameManager = Managers.Instance?.Game;
+        if (gameManager == null)
+        {
+            Debug.LogError("[LobbyUIController] GameManager를 찾을 수 없습니다.");
+            return;
+        }
+
+        PlayerDataSO[] characters = gameManager.AvailableCharacters;
+        if (characters == null || characters.Length == 0)
+        {
+            Debug.LogWarning("[LobbyUIController] 선택 가능한 캐릭터가 없습니다.");
+            return;
+        }
+
+        _characterSelectUI.Initialize(characters);
+        _characterSelectUI.OnCharacterSelected += OnCharacterSelected;
+    }
+
+    private void OnCharacterSelected(PlayerDataSO character)
+    {
+        Managers.Instance?.Game?.SelectCharacter(character);
     }
     #endregion
 

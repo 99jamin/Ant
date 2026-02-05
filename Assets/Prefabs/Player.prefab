@@ -208,8 +208,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.005473718, y: 0.5751588}
-  m_Size: {x: 0.28237984, y: 0.87801635}
+  m_Offset: {x: -0.009101987, y: -0.09708741}
+  m_Size: {x: 0.61771846, y: 0.74514574}
   m_Direction: 0
 --- !u!50 &8709485705328950426
 Rigidbody2D:
@@ -223,7 +223,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 50
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -302,10 +302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bcc04e70db22a84c87f0abf5bfe58b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMoveSpeed: 2
+  baseMoveSpeed: 5
   flashMaterial: {fileID: 2100000, guid: 037eef54c3543364d93d4651ad50a7ee, type: 2}
   flashDuration: 0.1
-  flashCount: 3
+  flashCount: 2
 --- !u!114 &8843603877064241791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,9 +323,9 @@ MonoBehaviour:
   maxLevel: 99
   baseExperienceRequired: 100
   experienceMultiplier: 1.2
-  invincibilityDuration: 0.5
-  baseMagnetRadius: 3
-  magnetPullSpeed: 15
+  invincibilityDuration: 1
+  baseMagnetRadius: 1
+  magnetPullSpeed: 10
   experienceLayer:
     serializedVersion: 2
     m_Bits: 4096

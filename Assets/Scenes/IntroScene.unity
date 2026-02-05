@@ -1608,6 +1608,13 @@ MonoBehaviour:
   _experienceLayer:
     serializedVersion: 2
     m_Bits: 4096
+  _availableCharacters:
+  - {fileID: 11400000, guid: 3786f41b4504a584db2ef14cf0d76db0, type: 2}
+  - {fileID: 11400000, guid: 3e6a8d561743fe1478b6163c140fdb47, type: 2}
+  - {fileID: 11400000, guid: 4cf9d0228434f8c4a8b50579d8aa6204, type: 2}
+  - {fileID: 11400000, guid: c526d956d00a823478b0c687b6a5fb6b, type: 2}
+  - {fileID: 11400000, guid: 2411b070aa6541a4a89799841fb02d0e, type: 2}
+  _defaultCharacter: {fileID: 11400000, guid: 3786f41b4504a584db2ef14cf0d76db0, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

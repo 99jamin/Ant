@@ -17,7 +17,6 @@ public class SkillManager : MonoBehaviour
 
     [Header("스킬 데이터")]
     [SerializeField] private List<SkillDataSO> allSkills; // 모든 스킬 데이터
-    [SerializeField] private SkillDataSO startingSkill;   // 시작 스킬
 
     [Header("레벨업 선택")]
     [SerializeField] private int choiceCount = 3; // 레벨업 시 선택지 수
@@ -57,10 +56,16 @@ public class SkillManager : MonoBehaviour
         // 플레이어 사망 이벤트 구독
         player.OnDeath += OnPlayerDeath;
 
-        // 시작 스킬 추가
+        // 선택된 캐릭터의 시작 스킬 추가
+        SkillDataSO startingSkill = Managers.Instance?.Game?.SelectedCharacter?.startingSkill;
         if (startingSkill != null)
         {
             AddSkill(startingSkill);
+            Debug.Log($"[SkillManager] 시작 스킬: {startingSkill.skillName}");
+        }
+        else
+        {
+            Debug.LogWarning("[SkillManager] 시작 스킬이 설정되지 않았습니다.");
         }
     }
 

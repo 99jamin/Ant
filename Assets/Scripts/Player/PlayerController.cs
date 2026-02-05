@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     // State
     private Vector2 _moveInput;
+    private float _appliedBaseMoveSpeed;  // 배율 적용된 기본 이동속도
     private float _currentMoveSpeed;
     private bool _isMovementEnabled = true;
 
@@ -54,7 +55,32 @@ public class PlayerController : MonoBehaviour
     {
         CacheComponents();
         ConfigureRigidbody();
-        _currentMoveSpeed = baseMoveSpeed;
+    }
+
+    private void Start()
+    {
+        InitializeMoveSpeed();
+    }
+
+    /// <summary>
+    /// PlayerDataSO 배율을 적용하여 이동 속도를 초기화합니다.
+    /// </summary>
+    private void InitializeMoveSpeed()
+    {
+        PlayerDataSO data = Managers.Instance?.Game?.SelectedCharacter;
+        if (data != null)
+        {
+            // 베이스값 × 배율
+            _appliedBaseMoveSpeed = baseMoveSpeed * data.moveSpeedMultiplier;
+            Debug.Log($"[PlayerController] 이동속도 로드: {_appliedBaseMoveSpeed} (베이스{baseMoveSpeed}×{data.moveSpeedMultiplier})");
+        }
+        else
+        {
+            // 기본값 사용 (배율 1.0)
+            _appliedBaseMoveSpeed = baseMoveSpeed;
+        }
+
+        _currentMoveSpeed = _appliedBaseMoveSpeed;
     }
 
     private void Update()
@@ -143,7 +169,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void SetSpeedMultiplier(float multiplier)
     {
-        _currentMoveSpeed = baseMoveSpeed * multiplier;
+        _currentMoveSpeed = _appliedBaseMoveSpeed * multiplier;
     }
 
     /// <summary>
@@ -151,7 +177,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void ResetSpeed()
     {
-        _currentMoveSpeed = baseMoveSpeed;
+        _currentMoveSpeed = _appliedBaseMoveSpeed;
     }
     #endregion
 

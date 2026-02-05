@@ -53,6 +53,34 @@ public class GameManager : MonoBehaviour
     public LayerMask ExperienceLayer => _experienceLayer;
     #endregion
 
+    #region Character Selection
+    [Header("캐릭터 설정")]
+    [SerializeField] private PlayerDataSO[] _availableCharacters;
+    [SerializeField] private PlayerDataSO _defaultCharacter;
+
+    private PlayerDataSO _selectedCharacter;
+
+    /// <summary>
+    /// 현재 선택된 캐릭터 데이터 (미선택 시 기본 캐릭터 반환)
+    /// </summary>
+    public PlayerDataSO SelectedCharacter => _selectedCharacter ?? _defaultCharacter;
+
+    /// <summary>
+    /// 선택 가능한 모든 캐릭터 목록
+    /// </summary>
+    public PlayerDataSO[] AvailableCharacters => _availableCharacters;
+
+    /// <summary>
+    /// 캐릭터를 선택합니다.
+    /// </summary>
+    /// <param name="character">선택할 캐릭터 데이터</param>
+    public void SelectCharacter(PlayerDataSO character)
+    {
+        _selectedCharacter = character;
+        Debug.Log($"[GameManager] 캐릭터 선택: {character?.characterName ?? "null"}");
+    }
+    #endregion
+
     #region Gold
     private int _gold;
 
