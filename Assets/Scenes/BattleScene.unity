@@ -1684,7 +1684,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4563bae4eaaea154db1d574d095ea983, type: 2}
   - {fileID: 11400000, guid: 5a633814795b87a429e79059efaf908c, type: 2}
   - {fileID: 11400000, guid: c11485db2ea77b945a61c9b0c572a4e7, type: 2}
-  startingSkill: {fileID: 11400000, guid: 4563bae4eaaea154db1d574d095ea983, type: 2}
   choiceCount: 3
 --- !u!114 &912551125
 MonoBehaviour:
@@ -3407,56 +3406,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8100978938586405892, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: flashCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8100978938586405892, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: baseMoveSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280246725837687548, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.61771846
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280246725837687548, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.74514574
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280246725837687548, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: m_Offset.x
-      value: -0.009101987
-      objectReference: {fileID: 0}
-    - target: {fileID: 8280246725837687548, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: m_Offset.y
-      value: -0.09708741
-      objectReference: {fileID: 0}
-    - target: {fileID: 8709485705328950426, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: m_Mass
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 8843603877064241791, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: magnetPullSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8843603877064241791, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: baseMagnetRadius
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8843603877064241791, guid: 08b85044ef0fd1f48acccebb4528d293,
-        type: 3}
-      propertyPath: invincibilityDuration
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

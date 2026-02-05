@@ -84,13 +84,14 @@ public class Player : MonoBehaviour, IDamageable
     [Header("경험치 자석")]
     [SerializeField] private float baseMagnetRadius = 3f;
     [SerializeField] private float magnetPullSpeed = 15f;
-    [SerializeField] private LayerMask experienceLayer;
     #endregion
 
     #region Private Fields
     private PlayerController _controller;
 
-    // Stats
+    // Stats (배율 적용된 값)
+    private float _appliedBaseHealth;
+    private float _appliedHealthPerLevel;
     private float _maxHealth;
     private float _currentHealth;
     private int _level = 1;
@@ -107,6 +108,7 @@ public class Player : MonoBehaviour, IDamageable
 
     // Magnet
     private readonly Collider2D[] _magnetBuffer = new Collider2D[32]; // GC 방지용 버퍼
+    private LayerMask _experienceLayer; // GameManager에서 캐싱
     #endregion
 
     #region Unity Lifecycle
@@ -140,14 +142,38 @@ public class Player : MonoBehaviour, IDamageable
     {
         _level = 1;
         _currentExperience = 0f;
-        MagnetRadius = baseMagnetRadius;
+
+        // GameManager에서 레이어 캐싱
+        _experienceLayer = Managers.Instance?.Game?.ExperienceLayer ?? default;
+
+        // PlayerDataSO 배율 적용
+        PlayerDataSO data = Managers.Instance?.Game?.SelectedCharacter;
+        if (data != null)
+        {
+            // 베이스값 × 배율
+            _appliedBaseHealth = baseHealth * data.healthMultiplier;
+            _appliedHealthPerLevel = healthPerLevel * data.healthPerLevelMultiplier;
+            MagnetRadius = baseMagnetRadius * data.magnetRadiusMultiplier;
+
+            Debug.Log($"[Player] 스탯 로드: HP={_appliedBaseHealth} (베이스{baseHealth}×{data.healthMultiplier}), " +
+                      $"레벨당HP={_appliedHealthPerLevel}, 자석반경={MagnetRadius}");
+        }
+        else
+        {
+            // 기본값 사용 (에디터 테스트용, 배율 1.0)
+            _appliedBaseHealth = baseHealth;
+            _appliedHealthPerLevel = healthPerLevel;
+            MagnetRadius = baseMagnetRadius;
+            Debug.LogWarning("[Player] SelectedCharacter가 null입니다. 베이스값을 그대로 사용합니다.");
+        }
+
         CalculateMaxHealth();
         _currentHealth = _maxHealth;
     }
 
     private void CalculateMaxHealth()
     {
-        _maxHealth = baseHealth + (healthPerLevel * (_level - 1));
+        _maxHealth = _appliedBaseHealth + (_appliedHealthPerLevel * (_level - 1));
     }
     #endregion
 
@@ -260,7 +286,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         if (MagnetRadius <= 0f) return;
 
-        int count = Physics2D.OverlapCircleNonAlloc(transform.position, MagnetRadius, _magnetBuffer, experienceLayer);
+        int count = Physics2D.OverlapCircleNonAlloc(transform.position, MagnetRadius, _magnetBuffer, _experienceLayer);
         float pullDelta = magnetPullSpeed * Time.deltaTime;
 
         for (int i = 0; i < count; i++)
