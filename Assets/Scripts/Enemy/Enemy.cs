@@ -55,20 +55,20 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     [SerializeField] private float _deathAnimationDuration = 0.5f;
     #endregion
 
-    #region Private Fields
-    private EnemyDataSO _data;
-    private string _poolKey;
-    private float _currentHealth;
-    private bool _isInitialized;
+    #region Protected/Private Fields
+    protected EnemyDataSO _data;
+    protected string _poolKey;
+    protected float _currentHealth;
+    protected bool _isInitialized;
 
     // Cached Components
-    private Rigidbody2D _rb;
-    private Collider2D _collider;
-    private SpriteRenderer _spriteRenderer;
-    private Animator _animator;
+    protected Rigidbody2D _rb;
+    protected Collider2D _collider;
+    protected SpriteRenderer _spriteRenderer;
+    protected Animator _animator;
 
     // References
-    private Transform _target;
+    protected Transform _target;
 
     // Hit Effect State
     private bool _isInvincible;
@@ -81,15 +81,18 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     // Death State
     private bool _isDying;
     private float _deathTimer;
+
+    // 이동 제어 (Boss 등 하위 클래스에서 패턴 실행 중 이동 억제용)
+    protected bool _canMove = true;
     #endregion
 
     #region Unity Lifecycle
-    private void Awake()
+    protected virtual void Awake()
     {
         CacheComponents();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (!_isInitialized) return;
 
@@ -113,8 +116,8 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     {
         if (!_isInitialized || IsDead) return;
 
-        // 넉백 중에는 추적하지 않음
-        if (_isKnockedBack) return;
+        // 넉백 또는 이동 불가 상태에서는 추적하지 않음
+        if (_isKnockedBack || !_canMove) return;
 
         ChaseTarget();
     }
@@ -151,7 +154,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     /// </summary>
     /// <param name="data">적의 스탯 및 외형 데이터</param>
     /// <param name="poolKey">풀 반환 시 사용할 키</param>
-    public void Init(EnemyDataSO data, string poolKey)
+    public virtual void Init(EnemyDataSO data, string poolKey)
     {
         if (data == null)
         {
@@ -319,13 +322,13 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     #endregion
 
     #region IPoolable Implementation
-    public void OnSpawnFromPool()
+    public virtual void OnSpawnFromPool()
     {
         FindTarget();
         _isInitialized = false;
     }
 
-    public void OnReturnToPool()
+    public virtual void OnReturnToPool()
     {
         ResetState();
         ClearEvents();
@@ -356,6 +359,9 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
         // 사망 상태 리셋
         _isDying = false;
         _deathTimer = 0f;
+
+        // 이동 제어 리셋
+        _canMove = true;
 
         // 콜라이더 다시 활성화
         if (_collider != null)
