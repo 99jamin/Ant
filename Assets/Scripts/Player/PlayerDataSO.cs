@@ -52,11 +52,24 @@ public class PlayerDataSO : ScriptableObject
     [Tooltip("경험치 자석 반경 배율 (1.0 = 100%)")]
     [Range(0.5f, 2f)]
     public float magnetRadiusMultiplier = 1f;
+
+    [Tooltip("공격력 배율 (1.0 = 100%)")]
+    [Range(0.5f, 3f)]
+    public float damageMultiplier = 1f;
     #endregion
 
     #region Starting Skill
     [Header("시작 스킬")]
     [Tooltip("게임 시작 시 자동으로 부여되는 스킬")]
     public SkillDataSO startingSkill;
+    #endregion
+
+    #region Unlock Settings
+    [Header("해금 설정")]
+    [Tooltip("해금에 필요한 단백질 (0 = 기본 해금)")]
+    public int unlockCost = 0;
+
+    [Tooltip("기본 해금 캐릭터 여부 (게임 시작 시 자동 해금)")]
+    public bool isDefaultUnlocked = false;
     #endregion
 }

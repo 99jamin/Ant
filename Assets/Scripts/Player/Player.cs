@@ -150,13 +150,24 @@ public class Player : MonoBehaviour, IDamageable
         PlayerDataSO data = Managers.Instance?.Game?.SelectedCharacter;
         if (data != null)
         {
-            // 베이스값 × 배율
-            _appliedBaseHealth = baseHealth * data.healthMultiplier;
-            _appliedHealthPerLevel = healthPerLevel * data.healthPerLevelMultiplier;
-            MagnetRadius = baseMagnetRadius * data.magnetRadiusMultiplier;
+            // 캐릭터 강화 배율 가져오기
+            var progress = Managers.Instance?.CharacterProgress;
+            string charName = data.characterName;
 
-            Debug.Log($"[Player] 스탯 로드: HP={_appliedBaseHealth} (베이스{baseHealth}×{data.healthMultiplier}), " +
-                      $"레벨당HP={_appliedHealthPerLevel}, 자석반경={MagnetRadius}");
+            float healthUpgrade = progress?.GetStatMultiplier(charName, StatType.Health) ?? 1f;
+            float magnetUpgrade = progress?.GetStatMultiplier(charName, StatType.MagnetRadius) ?? 1f;
+            float damageUpgrade = progress?.GetStatMultiplier(charName, StatType.Damage) ?? 1f;
+
+            // 베이스값 × 캐릭터 배율 × 강화 배율
+            _appliedBaseHealth = baseHealth * data.healthMultiplier * healthUpgrade;
+            _appliedHealthPerLevel = healthPerLevel * data.healthPerLevelMultiplier * healthUpgrade;
+            MagnetRadius = baseMagnetRadius * data.magnetRadiusMultiplier * magnetUpgrade;
+
+            // 공격력: 캐릭터 배율 × 강화 배율 (글로벌 배율에 반영)
+            _globalDamageMultiplier = data.damageMultiplier * damageUpgrade;
+
+            Debug.Log($"[Player] 스탯 로드: HP={_appliedBaseHealth}, 자석반경={MagnetRadius}, " +
+                      $"공격력배율={_globalDamageMultiplier} (캐릭터{data.damageMultiplier}×강화{damageUpgrade})");
         }
         else
         {

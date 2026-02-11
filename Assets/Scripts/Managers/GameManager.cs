@@ -81,20 +81,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region Gold
-    private int _gold;
-
-    /// <summary>
-    /// 현재 보유 골드
-    /// </summary>
-    public int Gold => _gold;
-
-    /// <summary>
-    /// 골드 변동 시 발행되는 이벤트
-    /// </summary>
-    public event Action<int> OnGoldChanged;
-    #endregion
-
     #region Scene Names
     // 씬 이름은 상수로 관리하여 오타 방지
     private const string SceneIntro = "IntroScene";
@@ -232,25 +218,12 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1f;
 
-        // 생존 시간 기반 보상 계산 (추후 확장)
+        // 생존 시간 기반 보상 계산
         int reward = CalculateReward(survivalTime);
-        AddGold(reward);
+        Managers.Instance.Currency?.AddProtein(reward);
 
-        Debug.Log($"[GameManager] 전투 종료 - 생존 시간: {survivalTime:F1}초, 보상: {reward} 골드");
+        Debug.Log($"[GameManager] 전투 종료 - 생존 시간: {survivalTime:F1}초, 보상: {reward} 단백질");
         ChangeState(GameState.BattleResult);
-    }
-    #endregion
-
-    #region Gold Management
-    /// <summary>
-    /// 골드를 추가합니다.
-    /// </summary>
-    public void AddGold(int amount)
-    {
-        if (amount <= 0) return;
-
-        _gold += amount;
-        OnGoldChanged?.Invoke(_gold);
     }
 
     /// <summary>
@@ -258,7 +231,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private int CalculateReward(float survivalTime)
     {
-        // 기본 보상: 생존 시간(초) * 1골드
+        // 기본 보상: 생존 시간(초) * 1 단백질
         return Mathf.FloorToInt(survivalTime);
     }
     #endregion

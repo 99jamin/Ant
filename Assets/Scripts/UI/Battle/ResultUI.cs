@@ -47,7 +47,7 @@ public class ResultUI : BaseUI
         int seconds = (int)(survivalTime % 60);
 
         survivalTimeText.SetText("생존 시간 : {0:00}:{1:00}", minutes, seconds);
-        scoreText.SetText("획득 재화 : {0}", score);
+        scoreText.SetText("획득 단백질 : {0}", score);
 
         Open();
     }
