@@ -1,27 +1,16 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// 로비 씬 UI 컨트롤러
-/// 캐릭터 선택, 배틀 시작 등 로비 씬의 UI 이벤트를 처리합니다.
+/// 캐릭터 선택과 배틀 시작을 관리합니다.
+/// 스타트 버튼은 CharacterSelectUI에서 OnStartRequested 이벤트로 전달됩니다.
 /// </summary>
 public class LobbyUIController : BaseUIController
 {
-    [Header("버튼")]
-    [SerializeField] private Button _battleStartButton;
-
     [Header("캐릭터 선택")]
     [SerializeField] private CharacterSelectUI _characterSelectUI;
 
     #region Unity Lifecycle
-    private void Awake()
-    {
-        if (_battleStartButton != null)
-        {
-            _battleStartButton.onClick.AddListener(OnBattleStartButtonClicked);
-        }
-    }
-
     private void Start()
     {
         InitializeCharacterSelect();
@@ -29,14 +18,10 @@ public class LobbyUIController : BaseUIController
 
     private void OnDestroy()
     {
-        if (_battleStartButton != null)
-        {
-            _battleStartButton.onClick.RemoveListener(OnBattleStartButtonClicked);
-        }
-
         if (_characterSelectUI != null)
         {
             _characterSelectUI.OnCharacterSelected -= OnCharacterSelected;
+            _characterSelectUI.OnStartRequested -= OnStartRequested;
         }
     }
     #endregion
@@ -62,23 +47,22 @@ public class LobbyUIController : BaseUIController
 
         _characterSelectUI.Initialize(characters);
         _characterSelectUI.OnCharacterSelected += OnCharacterSelected;
+        _characterSelectUI.OnStartRequested += OnStartRequested;
     }
 
     private void OnCharacterSelected(PlayerDataSO character)
     {
         Managers.Instance?.Game?.SelectCharacter(character);
     }
+
+    private void OnStartRequested()
+    {
+        Managers.Instance?.Game?.LoadBattle();
+    }
     #endregion
 
     #region BaseUIController
     public override void OnOpen() { }
     public override void OnClose() { }
-    #endregion
-
-    #region Button Handlers
-    private void OnBattleStartButtonClicked()
-    {
-        Managers.Instance.Game.LoadBattle();
-    }
     #endregion
 }

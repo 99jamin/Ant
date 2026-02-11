@@ -59,20 +59,48 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        InitializeAppearance();
         InitializeMoveSpeed();
     }
 
     /// <summary>
-    /// PlayerDataSO 배율을 적용하여 이동 속도를 초기화합니다.
+    /// PlayerDataSO의 스프라이트와 애니메이터를 적용합니다.
+    /// </summary>
+    private void InitializeAppearance()
+    {
+        PlayerDataSO data = Managers.Instance?.Game?.SelectedCharacter;
+        if (data == null) return;
+
+        // 스프라이트 적용
+        if (data.sprite != null)
+        {
+            _spriteRenderer.sprite = data.sprite;
+            Debug.Log($"[PlayerController] 스프라이트 적용: {data.sprite.name}");
+        }
+
+        // 애니메이터 컨트롤러 적용
+        if (data.animatorController != null)
+        {
+            _animator.runtimeAnimatorController = data.animatorController;
+            Debug.Log($"[PlayerController] 애니메이터 적용: {data.animatorController.name}");
+        }
+    }
+
+    /// <summary>
+    /// PlayerDataSO 배율과 캐릭터 강화 배율을 적용하여 이동 속도를 초기화합니다.
     /// </summary>
     private void InitializeMoveSpeed()
     {
         PlayerDataSO data = Managers.Instance?.Game?.SelectedCharacter;
         if (data != null)
         {
-            // 베이스값 × 배율
-            _appliedBaseMoveSpeed = baseMoveSpeed * data.moveSpeedMultiplier;
-            Debug.Log($"[PlayerController] 이동속도 로드: {_appliedBaseMoveSpeed} (베이스{baseMoveSpeed}×{data.moveSpeedMultiplier})");
+            // 캐릭터 강화 배율 가져오기
+            var progress = Managers.Instance?.CharacterProgress;
+            float speedUpgrade = progress?.GetStatMultiplier(data.characterName, StatType.MoveSpeed) ?? 1f;
+
+            // 베이스값 × 캐릭터 배율 × 강화 배율
+            _appliedBaseMoveSpeed = baseMoveSpeed * data.moveSpeedMultiplier * speedUpgrade;
+            Debug.Log($"[PlayerController] 이동속도 로드: {_appliedBaseMoveSpeed} (베이스{baseMoveSpeed}×{data.moveSpeedMultiplier}×{speedUpgrade})");
         }
         else
         {

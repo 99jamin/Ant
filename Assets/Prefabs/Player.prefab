@@ -165,7 +165,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: 89513d2281b4ae94195e6ddced9b01f6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 006ae75fcc72dec449bea121e3810aef, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -326,9 +326,6 @@ MonoBehaviour:
   invincibilityDuration: 1
   baseMagnetRadius: 1
   magnetPullSpeed: 10
-  experienceLayer:
-    serializedVersion: 2
-    m_Bits: 4096
 --- !u!1 &5355961253051389516
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: "\uD504\uB85C\uD2F4 \uC560\uD50C"
   icon: {fileID: 21300000, guid: 89513d2281b4ae94195e6ddced9b01f6, type: 3}
-  illustration: {fileID: 21300000, guid: c53ac66fa88e7e043b4df5a291d8621c, type: 3}
+  illustration: {fileID: 21300000, guid: 923db8d35fa1ec64788698c537cc4ad0, type: 3}
   lobbyAnimatorController: {fileID: 9100000, guid: 0dbe19791eb04ca429854e95c32477c4,
     type: 2}
   description: "\uAC15\uD55C \uC0AC\uACFC"
@@ -24,4 +24,7 @@ MonoBehaviour:
   healthPerLevelMultiplier: 1
   moveSpeedMultiplier: 1
   magnetRadiusMultiplier: 1
+  damageMultiplier: 1
   startingSkill: {fileID: 11400000, guid: 951d376e8b27a7946a1eb0f0265ae68a, type: 2}
+  unlockCost: 0
+  isDefaultUnlocked: 1

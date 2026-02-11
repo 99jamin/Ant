@@ -49,6 +49,8 @@ public class Managers : MonoBehaviour
     private PoolManager _pool;
     private UIManager _ui;
     private GameManager _game;
+    private CurrencyManager _currency;
+    private CharacterProgressManager _characterProgress;
 
     /// <summary>
     /// 오브젝트 풀링을 관리하는 매니저
@@ -64,6 +66,16 @@ public class Managers : MonoBehaviour
     /// 게임 상태 및 씬 전환을 관리하는 매니저
     /// </summary>
     public GameManager Game => _game;
+
+    /// <summary>
+    /// 재화(단백질)를 관리하는 매니저
+    /// </summary>
+    public CurrencyManager Currency => _currency;
+
+    /// <summary>
+    /// 캐릭터 해금 및 강화를 관리하는 매니저
+    /// </summary>
+    public CharacterProgressManager CharacterProgress => _characterProgress;
     #endregion
 
     #region Unity Lifecycle
@@ -104,6 +116,8 @@ public class Managers : MonoBehaviour
         _pool = GetOrCreateManager<PoolManager>("PoolManager");
         _ui = GetOrCreateManager<UIManager>("UIManager");
         _game = GetOrCreateManager<GameManager>("GameManager");
+        _currency = GetOrCreateManager<CurrencyManager>("CurrencyManager");
+        _characterProgress = GetOrCreateManager<CharacterProgressManager>("CharacterProgressManager");
 
         Debug.Log("[Managers] All managers initialized.");
     }

@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: Peach
   m_EditorClassIdentifier: 
   characterName: "\uD504\uB85C\uD2F4 \uD53C\uCE58"
-  icon: {fileID: 21300000, guid: 89513d2281b4ae94195e6ddced9b01f6, type: 3}
-  illustration: {fileID: 21300000, guid: e3f857b1b21397c468827c28403ba8bd, type: 3}
-  lobbyAnimatorController: {fileID: 9100000, guid: 0dbe19791eb04ca429854e95c32477c4,
+  icon: {fileID: 21300000, guid: 323ab3dd0b642a1409d4b41ed5462bbf, type: 3}
+  illustration: {fileID: 21300000, guid: 923db8d35fa1ec64788698c537cc4ad0, type: 3}
+  lobbyAnimatorController: {fileID: 9100000, guid: 5fc6399061454c548af532e62fa7126d,
     type: 2}
   description: "\uAC15\uD55C \uBCF5\uC22D\uC544"
-  sprite: {fileID: 21300000, guid: 89513d2281b4ae94195e6ddced9b01f6, type: 3}
-  animatorController: {fileID: 9100000, guid: 5659f4e260129f342967ef5415894ed0, type: 2}
+  sprite: {fileID: 21300000, guid: 323ab3dd0b642a1409d4b41ed5462bbf, type: 3}
+  animatorController: {fileID: 9100000, guid: 1005e96bfac26b94ab50aebae4ad84dd, type: 2}
   healthMultiplier: 1
   healthPerLevelMultiplier: 1
   moveSpeedMultiplier: 2
   magnetRadiusMultiplier: 1
+  damageMultiplier: 1
   startingSkill: {fileID: 11400000, guid: 4563bae4eaaea154db1d574d095ea983, type: 2}
+  unlockCost: 300
+  isDefaultUnlocked: 0
