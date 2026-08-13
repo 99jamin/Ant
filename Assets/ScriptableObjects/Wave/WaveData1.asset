@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: WaveData1
   m_EditorClassIdentifier: 
   waveEntries:
-  - startTime: 10
+  - startTime: 1
     enemyTypes:
     - {fileID: 11400000, guid: d14a21db7f1857d44a8e8976e25d78e5, type: 2}
     spawnInterval: 5
-    spawnCount: 1
+    spawnCount: 20
   - startTime: 20
     enemyTypes:
     - {fileID: 11400000, guid: f1e01f25385934746a822076cacd8ac4, type: 2}
@@ -29,5 +29,5 @@ MonoBehaviour:
     spawnInterval: 5
     spawnCount: 1
   bossEntries:
-  - spawnTime: 5
+  - spawnTime: 20
     bossData: {fileID: 11400000, guid: be518207bce8eea4a90104f2b99498d2, type: 2}

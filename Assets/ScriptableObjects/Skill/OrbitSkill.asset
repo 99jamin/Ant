@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: OrbitSkill
   m_EditorClassIdentifier: 
   _skillName: "\uD68C\uC804"
-  _description: "\uBD84\uC2E0\uC744 \uD68C\uC804\uC2DC\uD0B5\uB2C8\uB2E4"
   _icon: {fileID: 21300000, guid: 6f51eeabf8db99541af7c261eb025bae, type: 3}
   _skillPrefab: {fileID: 955016926269389681, guid: a1497b9cf4f026f43bcb11411204b479,
     type: 3}
@@ -24,7 +23,7 @@ MonoBehaviour:
   _spreadAngle: 0
   _fireDirection: 0
   _levels:
-  - damage: 3
+  - damage: 5
     cooldown: 1
     areaMultiplier: 2
     detectRange: 10
