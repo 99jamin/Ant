@@ -7,6 +7,12 @@ using UnityEngine;
 /// </summary>
 public class PoolManager : MonoBehaviour
 {
+    #region Serialized Fields
+    [Header("디버그")]
+    [Tooltip("끄면 풀을 재사용하지 않고 매번 Instantiate/Destroy로 동작합니다. GC/성능 비교용.")]
+    [SerializeField] private bool _poolingEnabled = true;
+    #endregion
+
     #region Private Fields
     // Stack 사용: LIFO 방식으로 최근 반환된 오브젝트를 재사용하여 캐시 효율 향상
     private readonly Dictionary<string, Stack<GameObject>> _pools = new();
@@ -59,7 +65,7 @@ public class PoolManager : MonoBehaviour
     {
         if (!ValidatePoolExists(key, "Get")) return null;
 
-        GameObject obj = _pools[key].Count > 0
+        GameObject obj = (_poolingEnabled && _pools[key].Count > 0)
             ? _pools[key].Pop()
             : CreateNewObject(key);
 
@@ -88,6 +94,13 @@ public class PoolManager : MonoBehaviour
         }
 
         DeactivateObject(obj, key);
+
+        if (!_poolingEnabled)
+        {
+            Destroy(obj);
+            return;
+        }
+
         _pools[key].Push(obj);
     }
 
